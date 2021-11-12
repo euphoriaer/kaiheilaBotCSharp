@@ -1,8 +1,9 @@
 # kaiheilaBotCSharp
-开黑啦机器人C#版
+开黑啦机器人C#版，需要机器人使用websocket ，基于.Net5.0 可以跨平台运行在服务器上。
+
 
 # Quick Start
-添加dll到引用
+添加CsharpBot.dll到引用，[Releases](https://github.com/euphoriaer/kaiheilaBotCSharp/releases)
 
     private static void Main(string[] args)
         {
