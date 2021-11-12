@@ -17,6 +17,11 @@ namespace CsharpBot
 
     public class Bot
     {
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="botToken">机器人Token</param>
+        /// <param name="query">默认不加密</param>
         public Bot(string botToken, int query = 0)
         {
             BotToken = botToken;
