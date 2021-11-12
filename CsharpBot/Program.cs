@@ -2,10 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Websocket.Client;
@@ -18,21 +15,41 @@ namespace CsharpBot
         public string message;//消息
     }
 
-    internal class Program
+    public class Bot
     {
-        private static string BotToken = "1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA==";
-        private static string baseUrl = "https://www.kaiheila.cn";
-        private static string apiGateway = "/api/v3/gateway/index";
+        public Bot(string botToken, int query = 0)
+        {
+            BotToken = botToken;
+            this.Query = query;
+        }
 
-        private static Uri wevsocketUrl;
-        private static string query = "0";//0 不压缩，1 压缩数据
+        private string BotToken;
+        private string BaseUrl = "https://www.kaiheila.cn";
+        private string ApiGateway = "/api/v3/gateway/index";
 
-        private static JToken lastSn = 0;//最后一个sn的计数
+        private Uri wevsocketUrl;
 
-        private static List<Kmessage> kMessageStack = new List<Kmessage>();//sn消息队列
-        private static WebsocketClient client;
+        /// <summary>
+        /// 0 不压缩，1 压缩数据
+        /// </summary>
+        private int Query = 0;
 
-        private static void Main(string[] args)
+        private JToken LastSn = 0;//最后一个sn的计数
+
+        private List<Kmessage> KMessageStack = new List<Kmessage>();//sn消息队列
+        private WebsocketClient Client;
+
+        /// <summary>
+        /// 监听服务器,回传Json字符串
+        /// </summary>
+        public Action<string> JsonListen;
+
+        /// <summary>
+        /// 监听频道消息，返回1消息,2频道ID
+        /// </summary>
+        public Action<string, string> ChatMsg;
+
+        public void Run()
         {
             //websocket 连接 1.Http 获取Gateway,2.解析Gateway url
             DataInit();
@@ -40,10 +57,10 @@ namespace CsharpBot
             ClientStart();
         }
 
-        private static void DataInit()
+        private void DataInit()
         {
-            kMessageStack.Clear();
-            lastSn = 0;
+            KMessageStack.Clear();
+            LastSn = 0;
             Task<string> gaturl = GetGateway();
             gaturl.Wait();
             Console.WriteLine(gaturl.Result);
@@ -62,28 +79,28 @@ namespace CsharpBot
             wevsocketUrl = new Uri(wss);
         }
 
-        private static void ClientStart()
+        private void ClientStart()
         {
             var exitEvent = new ManualResetEvent(false);
-            if (client != null)
+            if (Client != null)
             {
-                var tast = Task.Run(client.Reconnect);
+                var tast = Task.Run(Client.Reconnect);
                 tast.Wait();
             }
             else
             {
-                client = new WebsocketClient(wevsocketUrl);
+                Client = new WebsocketClient(wevsocketUrl);
 
-                client.DisconnectionHappened.Subscribe((info) => { Console.WriteLine("客户端： 断开服务器: " + info.Type); });
+                Client.DisconnectionHappened.Subscribe((info) => { Console.WriteLine("客户端： 断开服务器: " + info.Type); });
 
-                client.ReconnectionHappened.Subscribe((info) => { Console.WriteLine("客户端： 连接服务器: " + info.Type); });
+                Client.ReconnectionHappened.Subscribe((info) => { Console.WriteLine("客户端： 连接服务器: " + info.Type); });
 
-                client.MessageReceived.Subscribe(msg =>
+                Client.MessageReceived.Subscribe(msg =>
                 {
                     //分发消息
                     ReceiveMsg(msg);
                 });
-                var startTast = client.Start();
+                var startTast = Client.Start();
                 startTast.Wait();
             }
 
@@ -102,7 +119,7 @@ namespace CsharpBot
                 Console.WriteLine(input);
                 if (input == "exit")
                 {
-                    client.StopOrFail(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, null);
+                    Client.StopOrFail(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, null);
                     Environment.Exit(0);
                 }
             });
@@ -110,7 +127,11 @@ namespace CsharpBot
             exitEvent.WaitOne();
         }
 
-        private static void ReceiveMsg(ResponseMessage msg)
+        public void ClientCmd(string cmd)
+        {
+        }
+
+        private void ReceiveMsg(ResponseMessage msg)
         {
             //todo 每隔36秒 没有收到一次 pong包，视为连接超时， 需主动重连Resume
 
@@ -118,29 +139,24 @@ namespace CsharpBot
             JObject jo = (JObject)(JsonConvert.DeserializeObject(msg.ToString()));
 
             //使用反射分发
-            jo.TryGetValue("sn", out lastSn);
-            Console.WriteLine("客户端：收到消息:" + "sn:" + lastSn + msg.ToString());
+            jo.TryGetValue("sn", out LastSn);
+            if (JsonListen != null)
+            {
+                JsonListen(jo.ToString());
+            }
+            Console.WriteLine("客户端：收到消息:" + "sn:" + LastSn + msg.ToString());
             if ((int)jo["s"] == 3)
             {
                 //心跳包
             }
             if ((int)jo["s"] == 0)
             {
-                //todo 聊天消息，通知，反射分发消息
-                if (jo["d"]["content"].ToString() == "大傻逼")
+                string chatMsg = jo["d"]["content"].ToString();
+                string targetId = jo["d"]["target_id"].ToString();
+                Console.WriteLine("客户端：频道id" + targetId);
+                if (ChatMsg != null)
                 {
-                    string targetId = jo["d"]["target_id"].ToString();
-                    Console.WriteLine("客户端：频道id" + targetId);
-                    var result= PostSendMessage(targetId, "你是大傻逼");
-                    Console.WriteLine("客户端：收到回调" + result);
-                }
-
-                if (jo["d"]["content"].ToString() == "gu")
-                {
-                    string targetId = jo["d"]["target_id"].ToString();
-                    Console.WriteLine("客户端：频道id" + targetId);
-                    var result = PostSendMessage(targetId, "我是机器人");
-                    Console.WriteLine("客户端：收到回调" + result);
+                    ChatMsg(chatMsg, targetId);
                 }
             }
             if ((int)jo["s"] == 1)
@@ -204,44 +220,44 @@ namespace CsharpBot
 
         #region websocket 指令
 
-        private static void Ping()
+        private void Ping()
         {
             JObject pingJobj = new JObject();
             pingJobj.Add("s", 2);
-            pingJobj.Add("sn", lastSn);
+            pingJobj.Add("sn", LastSn);
             string pingJson = JsonConvert.SerializeObject(pingJobj);
 
             Console.WriteLine("客户端：发送ping" + pingJson);
-            client.Send(pingJson);
+            Client.Send(pingJson);
         }
 
         /// <summary>
         /// 主动重连
         /// </summary>
-        private static void Resume()
+        private void Resume()
         {
             JObject pingJobj = new JObject();
             pingJobj.Add("s", 4);
-            pingJobj.Add("sn", lastSn);
+            pingJobj.Add("sn", LastSn);
             string pingJson = JsonConvert.SerializeObject(pingJobj);
 
             Console.WriteLine("客户端：发送Resume" + pingJson);
-            client.Send(pingJson);
+            Client.Send(pingJson);
         }
 
         #endregion websocket 指令
 
         #region http 指令
 
-        private static Task<string> GetGateway()
+        private Task<string> GetGateway()
         {
-            string address = baseUrl + apiGateway + "?compress=0";
+            string address = BaseUrl + ApiGateway + "?compress=" + Query;
 
             using (var client = new HttpClient())
             {
                 HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, address);
                 httpRequestMessage.Headers.Add("Authorization", " Bot " + BotToken);
-                
+
                 var result = client.SendAsync(httpRequestMessage);
                 //请求结果client
                 //string result = client.GetAsync(address).Result.Content.ReadAsStringAsync().Result;
@@ -253,65 +269,30 @@ namespace CsharpBot
             return null;
         }
 
-        ///// <summary>
-        ///// 指定Post地址使用Get 方式获取全部字符串
-        ///// </summary>
-        ///// <param name="url">请求后台地址</param>
-        ///// <param name="content">Post提交数据内容(utf-8编码的)</param>
-        ///// <returns></returns>
-        //public static string Post(string url, string content)
-        //{
-        //    string result = "";
-        //    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-        //    req.Method = "Post";
-        //    req.Headers.Add("Authorization", " Bot " + BotToken);
-     
-        //    #region 添加Post 参数
-
-        //    byte[] data = Encoding.UTF8.GetBytes(content);
-        //    req.ContentLength = data.Length;
-        //    using (Stream reqStream = req.GetRequestStream())
-        //    {
-        //        reqStream.Write(data, 0, data.Length);
-        //        reqStream.Close();
-        //    }
-
-        //    #endregion 添加Post 参数
-
-        //    HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
-        //    Stream stream = resp.GetResponseStream();
-        //    //获取响应内容
-        //    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-        //    {
-        //        result = reader.ReadToEnd();
-        //    }
-        //    return result;
-        //}
-
-        private static string PostSendMessage(string target_id, string content)
+        /// <summary>
+        /// 频道id，内容
+        /// </summary>
+        /// <param name="target_id"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public string SendMessage(string target_id, string content)
         {
-            string address = baseUrl + "/api/v3/message/create";
+            string address = BaseUrl + "/api/v3/message/create";
 
             JObject msgJobj = new JObject();
             msgJobj.Add("target_id", target_id);
             msgJobj.Add("content", content);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 
-
             using (var client = new HttpClient())
             {
-
                 HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, address);
                 httpRequestMessage.Headers.Add("Authorization", " Bot " + BotToken);
                 httpRequestMessage.Content = new StringContent(msgJson);
                 httpRequestMessage.Content.Headers.Remove("Content-type");
                 httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
                 var result = client.SendAsync(httpRequestMessage);//返回结果
-                
                 var res = result.Result.Content.ReadAsStringAsync();
-
-                Console.WriteLine(res);
-
                 return res.Result;
             }
         }
