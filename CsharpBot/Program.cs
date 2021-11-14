@@ -53,7 +53,7 @@ namespace CsharpBot
         /// 监听频道消息，返回1消息,2频道ID
         /// </summary>
         public Action<string, string> ChatMsg;
-
+        
         public void Run()
         {
             //websocket 连接 1.Http 获取Gateway,2.解析Gateway url
@@ -61,7 +61,9 @@ namespace CsharpBot
             // 开始连接websocket
             ClientStart();
         }
-
+        /// <summary>
+        /// 数据初始化
+        /// </summary>
         private void DataInit()
         {
             KMessageStack.Clear();
@@ -121,19 +123,19 @@ namespace CsharpBot
             Task.Run(() =>
             {   //客户端主动指令
                 string input = Console.ReadLine();
-                Console.WriteLine(input);
                 if (input == "exit")
                 {
-                    Client.StopOrFail(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, null);
-                    Environment.Exit(0);
+                    CloseClient();
                 }
             });
 
             exitEvent.WaitOne();
         }
 
-        public void ClientCmd(string cmd)
+        public void CloseClient()
         {
+            Client.StopOrFail(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, null);
+            Environment.Exit(0);
         }
 
         private void ReceiveMsg(ResponseMessage msg)
@@ -174,34 +176,24 @@ namespace CsharpBot
                 {
                     case 400100:
                         Console.WriteLine("客户端：缺少参数");
-                        DataInit();
-                        // 重新连接websocket
-                        ClientStart();
+                        CloseClient();
                         break;
 
                     case 400101:
                         Console.WriteLine("客户端：无效的 token");
-                        DataInit();
-                        // 重新连接websocket
-                        ClientStart();
-                        return;
+                        CloseClient();
+
                         break;
 
                     case 400102:
                         Console.WriteLine("客户端：token 验证失败");
-                        DataInit();
-                        // 重新连接websocket
-                        ClientStart();
-                        return;
+                        CloseClient();
+
                         break;
 
                     case 400103:
                         Console.WriteLine("客户端：token 过期");
-                        DataInit();
-                        // 重新连接websocket
-                        ClientStart();
-                        return;
-                        break;
+                        CloseClient();
                         break;
 
                     default:
@@ -277,8 +269,8 @@ namespace CsharpBot
         /// <summary>
         /// 频道id，内容
         /// </summary>
-        /// <param name="target_id"></param>
-        /// <param name="content"></param>
+        /// <param name="target_id">频道id</param>
+        /// <param name="content">内容</param>
         /// <returns></returns>
         public string SendMessage(string target_id, string content)
         {
