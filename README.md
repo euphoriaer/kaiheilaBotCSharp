@@ -7,7 +7,7 @@
 
     private static void Main(string[] args)
         {
-            bot = new Bot("1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA==");
+            bot = new Bot("机器人的token");
             bot.ChatMsg += Receive;
             bot.Run();
         }
