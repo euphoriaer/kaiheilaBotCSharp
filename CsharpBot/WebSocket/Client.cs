@@ -28,7 +28,7 @@ namespace CsharpBot
             }
             else
             {
-                WebsocketClient = new WebsocketClient(Bot.wevsocketUrl);
+                WebsocketClient = new WebsocketClient(Bot.websocketUri);
 
                 WebsocketClient.DisconnectionHappened.Subscribe((info) => { Console.WriteLine("客户端： 断开服务器: " + info.Type); });
 

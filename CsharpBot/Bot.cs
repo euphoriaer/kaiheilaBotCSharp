@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using CsharpBot.Http;
+using Microsoft.VisualBasic;
 using Websocket.Client;
 
 namespace CsharpBot
@@ -38,7 +39,7 @@ namespace CsharpBot
 
         internal string BotToken;
     
-        internal Uri wevsocketUrl;
+        internal Uri websocketUri;
 
         /// <summary>
         /// 0 不压缩，1 压缩数据
@@ -53,6 +54,7 @@ namespace CsharpBot
         /// 监听服务器,回传Json字符串
         /// </summary>
         public Action<string> JsonListen;
+
         /// <summary>
         /// 私聊消息，返回1消息,2频道ID
         /// </summary>
@@ -95,7 +97,7 @@ namespace CsharpBot
             JObject jo = (JObject)(JsonConvert.DeserializeObject(gaturl.Result));
             string wss = jo["data"]["url"].ToString();
             Console.WriteLine("客户端:解析websocket链接  " + wss);
-            wevsocketUrl = new Uri(wss);
+            websocketUri = new Uri(wss);
 
 
             SendMessage = new SendMessage(this);
@@ -130,7 +132,6 @@ namespace CsharpBot
                 if (ChannelMsg != null&&channelType== "GROUP")
                 {
                     string targetId = jo["d"]["target_id"].ToString();
-                    Console.WriteLine("客户端：频道id" + targetId);
                     ChannelMsg(msgContent, targetId);
                 }
 

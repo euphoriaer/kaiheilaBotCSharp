@@ -25,7 +25,6 @@ namespace CsharpBot.Http
 
                 var result = client.SendAsync(httpRequestMessage);
                 //请求结果client
-                //string result = client.GetAsync(address).Result.Content.ReadAsStringAsync().Result;
                 var webUrl = result.Result.Content.ReadAsStringAsync();
 
                 Console.WriteLine(webUrl);
