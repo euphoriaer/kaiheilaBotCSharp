@@ -10,16 +10,22 @@ namespace HelloBot
         private static void Main(string[] args)
         {
             bot = new Bot("1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA==");
-            bot.ChatMsg += Receive;
+            bot.ChannelMsg += ChannelReceive;
+            bot.ChatlMsg += ChatMsg;
             bot.Run();
         }
 
-        private static void Receive(string chat, string targetID)
+        private static void ChatMsg(string chat, string targetID)
+        {
+           //登录
+        }
+
+        private static void ChannelReceive(string chat, string targetID)
         {
             Console.WriteLine("Bot:" + chat);
             if (chat == "你好")
             {
-                bot.SendMessage(targetID, "我是机器人。你好");
+                bot.SendMessage.Channel(targetID, "我是机器人。你好");
             }
         }
     }
