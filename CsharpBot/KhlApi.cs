@@ -6,6 +6,5 @@
         internal static string ApiGateway = "/api/v3/gateway/index";
         internal static string ChannelCreate = "/api/v3/message/create";
         internal static string ChatCreate = "/api/v3/direct-message/create";
-
     }
 }

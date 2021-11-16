@@ -68,6 +68,5 @@ namespace CsharpBot
                 return res.Result;
             }
         }
-
     }
 }

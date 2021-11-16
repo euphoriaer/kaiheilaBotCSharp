@@ -1,12 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using CsharpBot.Http;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
-using CsharpBot.Http;
-using Microsoft.VisualBasic;
 using Websocket.Client;
 
 namespace CsharpBot
@@ -38,7 +35,7 @@ namespace CsharpBot
         }
 
         internal string BotToken;
-    
+
         internal Uri websocketUri;
 
         /// <summary>
@@ -49,7 +46,6 @@ namespace CsharpBot
         internal JToken LastSn = 0;//最后一个sn的计数
         internal List<Kmessage> KMessageStack = new List<Kmessage>();//sn消息队列
 
-
         /// <summary>
         /// 监听服务器,回传Json字符串
         /// </summary>
@@ -59,6 +55,7 @@ namespace CsharpBot
         /// 私聊消息，返回1消息,2频道ID
         /// </summary>
         public Action<string, string> ChatlMsg;
+
         /// <summary>
         /// 监听频道消息，返回1消息,2频道ID
         /// </summary>
@@ -99,7 +96,6 @@ namespace CsharpBot
             Console.WriteLine("客户端:解析websocket链接  " + wss);
             websocketUri = new Uri(wss);
 
-
             SendMessage = new SendMessage(this);
             Client = new Client(this);
         }
@@ -124,24 +120,21 @@ namespace CsharpBot
             }
             if ((int)jo["s"] == 0)
             {
-                
-                string msgContent= jo["d"]["content"].ToString();
-                
+                string msgContent = jo["d"]["content"].ToString();
+
                 string channelType = jo["d"]["channel_type"].ToString();
-               
-                if (ChannelMsg != null&&channelType== "GROUP")
+
+                if (ChannelMsg != null && channelType == "GROUP")
                 {
                     string targetId = jo["d"]["target_id"].ToString();
                     ChannelMsg(msgContent, targetId);
                 }
 
-                if (ChatlMsg!=null&& channelType== "PERSON")
+                if (ChatlMsg != null && channelType == "PERSON")
                 {
                     string targetId = jo["d"]["author_id"].ToString();
                     ChatlMsg(msgContent, targetId);
                 }
-
-
             }
             if ((int)jo["s"] == 1)
             {
@@ -153,7 +146,7 @@ namespace CsharpBot
                 {
                     case 400100:
                         Console.WriteLine("客户端：缺少参数");
-                         Client.CloseClient();
+                        Client.CloseClient();
                         break;
 
                     case 400101:
@@ -191,13 +184,13 @@ namespace CsharpBot
                 //主动重连成功
             }
         }
+
         public void CloseBot()
         {
             //退出Bot
-            
+
             //关闭socket连接
             Client.CloseClient();
         }
-        
     }
 }

@@ -9,4 +9,8 @@
     <ProjectReference Include="..\..\CsharpBot\CsharpBot.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Bot\Channel\" />
+  </ItemGroup>
+
 </Project>

@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CsharpBot.Http
 {
-   internal class Gateway
-   {
-       private Bot Bot;
+    internal class Gateway
+    {
+        private Bot Bot;
+
         internal Gateway(Bot bot)
         {
             Bot = bot;
         }
+
         internal Task<string> GetGateway()
         {
-            string address =KhlApi.BaseUrl + KhlApi.ApiGateway + "?compress=" + Bot.Query;
+            string address = KhlApi.BaseUrl + KhlApi.ApiGateway + "?compress=" + Bot.Query;
 
             using (var client = new HttpClient())
             {

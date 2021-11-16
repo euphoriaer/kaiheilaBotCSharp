@@ -14,6 +14,7 @@ namespace HelloBot
             bot.ChatlMsg += ChatMsg;
             bot.Run();
         }
+
         /// <summary>
         /// 私聊消息
         /// </summary>
@@ -27,6 +28,7 @@ namespace HelloBot
                 bot.SendMessage.Chat(targetID, "我是机器人。你好");
             }
         }
+
         /// <summary>
         /// 频道消息
         /// </summary>
