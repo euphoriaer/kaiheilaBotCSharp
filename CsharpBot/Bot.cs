@@ -47,7 +47,7 @@ namespace CsharpBot
         internal List<Kmessage> KMessageStack = new List<Kmessage>();//sn消息队列
 
         /// <summary>
-        /// 监听服务器,回传Json字符串
+        /// 监听服务器消息,回传Json字符串
         /// </summary>
         public Action<string> JsonListen;
 
@@ -107,14 +107,13 @@ namespace CsharpBot
             //解析
             JObject jo = (JObject)(JsonConvert.DeserializeObject(msg.ToString()));
 
-            //使用反射分发
             jo.TryGetValue("sn", out LastSn);
             if (JsonListen != null)
             {
                 JsonListen(jo.ToString());
             }
             Console.WriteLine("客户端：收到消息:" + "sn:" + LastSn + msg.ToString());
-            if ((int)jo["s"] == 3)
+            if ((int)jo["s"] == 3)//error s使用 有限状态机
             {
                 //心跳包
             }
@@ -141,7 +140,6 @@ namespace CsharpBot
                 //握手结果 400103
                 jo.TryGetValue("d", out JToken? d);
                 var code = d.Value<int>("code");
-                //error  改写为有限状态机
                 switch (code)
                 {
                     case 400100:

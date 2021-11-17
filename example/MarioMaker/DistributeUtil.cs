@@ -35,7 +35,7 @@ namespace MarioMaker
         public DistributeUtil(object? obj)
         {
             Cache = new Dictionary<string, T1>();
-            //error GetMethods 方法获取
+            //todo GetMethods 方法获取 是否会受到Flags在性能方面的影响（Flags 数量影响速度？）
             var methods = typeof(T3).GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var method in methods)

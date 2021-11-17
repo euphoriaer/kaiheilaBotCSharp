@@ -1,5 +1,5 @@
 ﻿namespace CsharpBot
-{//error 改写一个可复用的Http get 和Set
+{//error 改写一个可复用的Http get 和Set，开黑啦Api在MarioMaker使用
     internal static class KhlApi
     {
         internal static string BaseUrl = "https://www.kaiheila.cn";

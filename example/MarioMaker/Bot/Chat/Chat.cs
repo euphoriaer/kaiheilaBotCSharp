@@ -6,7 +6,13 @@ namespace MarioMaker
 {
     internal partial class Program
     {
-        [MarioAttr(".登录.ChatMsg")]
+        [MarioAttr(".help.ChatMsg")]
+        private static void HelpChat(string[] msgs, string id)
+        {
+            Bot.SendMessage.Chat(id, ChannelHelp);
+        }
+
+        [MarioAttr(".login.ChatMsg")]
         private static void SendLogin(string[] msgs, string id)
         {
             if (msgs.Length == 2)
@@ -25,7 +31,7 @@ namespace MarioMaker
 
                 using (var client = new HttpClient())
                 {
-                    HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, Login);
+                    HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, cfg.Read("Login"));
                     httpRequestMessage.Content = new StringContent(msgJson);
                     httpRequestMessage.Content.Headers.Remove("Content-type");
                     httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
@@ -36,12 +42,12 @@ namespace MarioMaker
                     {
                         Bot.SendMessage.Chat(id, "回调错误，post返回为空");
                     }
-                    Bot.SendMessage.Chat(id, "登录结果：" + res.Result);
+                    Bot.SendMessage.Chat(id, "结果：" + res.Result);
                 }
             }
         }
 
-        [MarioAttr(".注册.ChatMsg")]
+        [MarioAttr(".reg.ChatMsg")]
         public static void SendRegister(string[] msgs, string id)
         {
             if (msgs.Length == 2)
@@ -66,29 +72,24 @@ namespace MarioMaker
                 msgJobj.Add("password", pwd);
                 string msgJson = JsonConvert.SerializeObject(msgJobj);
 
-                Send鼠Chat(id, msgJson);
-            }
-        }
-
-        private static void Send鼠Chat(string id, string msgJson)
-        {
-            using (var client = new HttpClient())
-            {
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, Register);
-                httpRequestMessage.Content = new StringContent(msgJson);
-                httpRequestMessage.Content.Headers.Remove("Content-type");
-                httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
-                var result = client.SendAsync(httpRequestMessage); //返回结果
-                var res = result.Result.Content.ReadAsStringAsync();
-                res.Wait();
-
-                if (string.IsNullOrEmpty(res.Result))
+                using (var client = new HttpClient())
                 {
-                    Bot.SendMessage.Chat(id, "回调错误，post返回为空");
-                    return;
-                }
+                    HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, cfg.Read("Register"));
+                    httpRequestMessage.Content = new StringContent(msgJson);
+                    httpRequestMessage.Content.Headers.Remove("Content-type");
+                    httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
+                    var result = client.SendAsync(httpRequestMessage); //返回结果
+                    var res = result.Result.Content.ReadAsStringAsync();
+                    res.Wait();
 
-                Bot.SendMessage.Chat(id, "注册结果：" + res.Result);
+                    if (string.IsNullOrEmpty(res.Result))
+                    {
+                        Bot.SendMessage.Chat(id, "回调错误，post返回为空");
+                        return;
+                    }
+
+                    Bot.SendMessage.Chat(id, "结果：" + res.Result);
+                }
             }
         }
     }
