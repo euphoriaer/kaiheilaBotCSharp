@@ -47,9 +47,14 @@ namespace CsharpBot
         internal List<Kmessage> KMessageStack = new List<Kmessage>();//sn消息队列
 
         /// <summary>
-        /// 监听服务器消息,回传Json字符串
+        /// 监听服务器所有消息(包括心跳，握手，断开重连等等),回传Json字符串
         /// </summary>
         public Action<string> JsonListen;
+
+        /// <summary>
+        /// 监听服务器聊天消息,回传Json字符串
+        /// </summary>
+        public Action<string> MessageListen;
 
         /// <summary>
         /// 私聊消息，返回1消息,2频道ID
@@ -113,7 +118,7 @@ namespace CsharpBot
                 JsonListen(jo.ToString());
             }
             Console.WriteLine("客户端：收到消息:" + "sn:" + LastSn + msg.ToString());
-            if ((int)jo["s"] == 3)//error s使用 有限状态机
+            if ((int)jo["s"] == 3)//error s使用 通用消息分发
             {
                 //心跳包
             }
@@ -122,6 +127,11 @@ namespace CsharpBot
                 string msgContent = jo["d"]["content"].ToString();
 
                 string channelType = jo["d"]["channel_type"].ToString();
+
+                if (MessageListen != null)
+                {
+                    MessageListen(jo.ToString());
+                }
 
                 if (ChannelMsg != null && channelType == "GROUP")
                 {

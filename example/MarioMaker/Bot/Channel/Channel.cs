@@ -6,13 +6,17 @@ namespace MarioMaker
 {
     internal partial class Program
     {
-        [MarioAttr(".add.ChannelMsg")]
-        public static void AddGuanqia(string[] msgs, string id)
+        [MarioAttr(".add.GROUP")]
+        public static void AddGuanqia(JToken jObject)
         {
+            var msgs = jObject["content"].ToString().Split(" ");
+            string kaiheilaId = jObject["author_id"].ToString();
+
             JObject msgJobj = new JObject();
             msgJobj.Add("levelId", msgs[1]);
             msgJobj.Add("levelName", msgs[2]);
             msgJobj.Add("levelType", msgs[3]);
+            msgJobj.Add("kaiheilaId", kaiheilaId);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 
             using (var client = new HttpClient())
@@ -27,18 +31,18 @@ namespace MarioMaker
 
                 if (string.IsNullOrEmpty(res.Result))
                 {
-                    Bot.SendMessage.Chat(id, "回调错误，post返回为空");
+                    Bot.SendMessage.Channel(jObject["target_id"].ToString(), "回调错误，post返回为空");
                     return;
                 }
 
-                Bot.SendMessage.Channel(id, "结果：" + res.Result);
+                Bot.SendMessage.Channel(jObject["target_id"].ToString(), "结果：" + res.Result);
             }
         }
 
-        [MarioAttr(".help.ChannelMsg")]
-        private static void HelpChannel(string[] msgs, string id)
+        [MarioAttr(".help.GROUP")]
+        private static void HelpChannel(JToken jObject)
         {
-            Bot.SendMessage.Channel(id, ChannelHelp);
+            Bot.SendMessage.Channel(jObject["target_id"].ToString(), ChannelHelp);
         }
     }
 }
