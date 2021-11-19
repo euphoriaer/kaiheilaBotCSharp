@@ -9,24 +9,24 @@ namespace MarioMaker
     internal partial class Program
     {
         private static Bot Bot;
-        private static DistributeUtil<Action<JToken>, MarioAttr, Program> distribute;
+        private static DistributeUtil<Action<JToken>, AttrMario, Program> distribute;
 
         public static Config cfg;
 
         private const string ChatHelp =
             "马造机器人命令" + "\n" + "\n" +
-            "注册用户：.reg 用户名 密码" + "\n" + "\n";
+            @"注册用户：.reg 用户名\密码" + "\n" + "\n";
 
         private const string ChannelHelp =
             "马造机器人命令" + "\n" + "\n" +
-            "添加关卡：.add 关卡ID 名字 类型" + "\n" + "\n";
+            @"添加关卡：.add 关卡ID\名字\类型" + "\n" + "\n";
         
 
         private static void Main(string[] args)
         {
             Console.WriteLine("在开黑啦私聊机器人 .help 查看命令");
 
-            distribute = new DistributeUtil<Action<JToken>, MarioAttr, Program>(null);
+            distribute = new DistributeUtil<Action<JToken>, AttrMario, Program>(null);
             var configPath = Path.Combine(System.Environment.CurrentDirectory, "Config.Json");
             cfg = new Config(configPath);
             string botToken = cfg.Read("BotToken");
@@ -61,38 +61,5 @@ namespace MarioMaker
             }
            
         }
-
-        //private static void ChannelMsg(string msg, string id)
-        //{
-        //    Console.WriteLine(msg);
-        //    string[] msgs = msg.Split(" ");
-        //    try
-        //    {
-        //        string disName = msgs[0] + ".ChannelMsg";
-        //        var msgMethod = distribute.GetMethod(disName);
-        //        msgMethod(msgs, id);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Bot.SendMessage.Chat(id, "回调错误" + e);
-        //    }
-        //}
-
-        //private static void ChatMsg(string msg, string id)
-        //{
-        //    Console.WriteLine(msg);
-        //    string[] msgs = msg.Split(" ");
-
-        //    try
-        //    {
-        //        string disName = msgs[0] + ".ChatMsg";
-        //        var msgMethod = distribute.GetMethod(disName);
-        //        msgMethod(msgs, id);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Bot.SendMessage.Chat(id, "错误" + e);
-        //    }
-        //}
     }
 }

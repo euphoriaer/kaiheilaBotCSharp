@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
+using System.Security.Policy;
 
 namespace CsharpBot
 {
@@ -12,6 +13,7 @@ namespace CsharpBot
         {
             Bot = bot;
         }
+       
 
         /// <summary>
         /// 频道id，内容
@@ -19,9 +21,9 @@ namespace CsharpBot
         /// <param name="target_id">频道id</param>
         /// <param name="content">内容</param>
         /// <returns></returns>
-        public string Channel(string target_id, string content)
+        public string Channel(string target_id, string content,string url = "https://www.kaiheila.cn/api/v3/message/create")
         {
-            string address = KhlApi.BaseUrl + KhlApi.ChannelCreate;
+            string address = url;
 
             JObject msgJobj = new JObject();
             msgJobj.Add("target_id", target_id);
@@ -47,9 +49,9 @@ namespace CsharpBot
         /// <param name="target_id">用户id</param>
         /// <param name="content">内容</param>
         /// <returns></returns>
-        public string Chat(string target_id, string content)
+        public string Chat(string target_id, string content, string url = "https://www.kaiheila.cn/api/v3/direct-message/create")
         {
-            string address = KhlApi.BaseUrl + KhlApi.ChatCreate;
+            string address = url;
 
             JObject msgJobj = new JObject();
             msgJobj.Add("target_id", target_id);
@@ -68,5 +70,24 @@ namespace CsharpBot
                 return res.Result;
             }
         }
+
+        public string Post(Url httpUrl, string contentJson)
+        {
+        
+            string msgJson = JsonConvert.SerializeObject(contentJson);
+
+            using (var client = new HttpClient())
+            {
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, httpUrl.ToString());
+                httpRequestMessage.Headers.Add("Authorization", " Bot " + Bot.BotToken);
+                httpRequestMessage.Content = new StringContent(msgJson);
+                httpRequestMessage.Content.Headers.Remove("Content-type");
+                httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
+                var result = client.SendAsync(httpRequestMessage);//返回结果
+                var res = result.Result.Content.ReadAsStringAsync();
+                return res.Result;
+            }
+        }
+
     }
 }

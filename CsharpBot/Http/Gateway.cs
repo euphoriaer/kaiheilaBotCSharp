@@ -7,15 +7,16 @@ namespace CsharpBot.Http
     internal class Gateway
     {
         private Bot Bot;
-
+        private string GatewayUrl= "https://www.kaiheila.cn/api/v3/gateway/index";
         internal Gateway(Bot bot)
         {
             Bot = bot;
         }
 
+        //    internal static string ApiGateway = "";
         internal Task<string> GetGateway()
         {
-            string address = KhlApi.BaseUrl + KhlApi.ApiGateway + "?compress=" + Bot.Query;
+            string address = GatewayUrl + "?compress=" + Bot.Query;
 
             using (var client = new HttpClient())
             {

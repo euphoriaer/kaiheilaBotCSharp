@@ -85,6 +85,7 @@ namespace CsharpBot
         {
             KMessageStack.Clear();
             LastSn = 0;
+            //通过Gateway 获取websocket 连接地址
             Task<string> gaturl = new Gateway(this).GetGateway();
             gaturl.Wait();
             Console.WriteLine(gaturl.Result);
@@ -96,13 +97,18 @@ namespace CsharpBot
             else if (gaturl.Result.Length <= 0)
             {
             }
+            //解析Gateway 获取到的内容
             JObject jo = (JObject)(JsonConvert.DeserializeObject(gaturl.Result));
             string wss = jo["data"]["url"].ToString();
             Console.WriteLine("客户端:解析websocket链接  " + wss);
             websocketUri = new Uri(wss);
 
-            SendMessage = new SendMessage(this);
+            //websocket 对象
             Client = new Client(this);
+            //发送消息对象
+            SendMessage = new SendMessage(this);
+            //信令分发对象
+
         }
 
         internal void ReceiveMsg(ResponseMessage msg)

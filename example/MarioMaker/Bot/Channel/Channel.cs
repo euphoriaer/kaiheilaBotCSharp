@@ -6,16 +6,16 @@ namespace MarioMaker
 {
     internal partial class Program
     {
-        [MarioAttr(".add.GROUP")]
+        [AttrMario(".add.GROUP")]
         public static void AddGuanqia(JToken jObject)
         {
-            var msgs = jObject["content"].ToString().Split(" ");
+            var msgs = jObject["content"].ToString().Split(" ")[1].Split(@"\");
             string kaiheilaId = jObject["author_id"].ToString();
 
             JObject msgJobj = new JObject();
-            msgJobj.Add("levelId", msgs[1]);
-            msgJobj.Add("levelName", msgs[2]);
-            msgJobj.Add("levelType", msgs[3]);
+            msgJobj.Add("levelId", msgs[0]);
+            msgJobj.Add("levelName", msgs[1]);
+            msgJobj.Add("levelType", msgs[2]);
             msgJobj.Add("kaiheilaId", kaiheilaId);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 
@@ -39,7 +39,7 @@ namespace MarioMaker
             }
         }
 
-        [MarioAttr(".help.GROUP")]
+        [AttrMario(".help.GROUP")]
         private static void HelpChannel(JToken jObject)
         {
             Bot.SendMessage.Channel(jObject["target_id"].ToString(), ChannelHelp);
