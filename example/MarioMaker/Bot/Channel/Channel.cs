@@ -11,6 +11,7 @@ namespace MarioMaker
         {
             var msgs = jObject["content"].ToString().Split(" ")[1].Split(@"\");
             string kaiheilaId = jObject["author_id"].ToString();
+           string targetID= jObject["target_id"].ToString();
 
             JObject msgJobj = new JObject();
             msgJobj.Add("levelId", msgs[0]);
@@ -31,7 +32,7 @@ namespace MarioMaker
 
                 if (string.IsNullOrEmpty(res.Result))
                 {
-                    Bot.SendMessage.Channel(jObject["target_id"].ToString(), "回调错误，post返回为空");
+                    Bot.SendMessage.Channel(targetID, "回调错误，post返回为空");
                     return;
                 }
 

@@ -10,7 +10,7 @@ namespace MarioMaker
     {
         private static Bot Bot;
         private static DistributeUtil<Action<JToken>, AttrMario, Program> distribute;
-
+        private static string BaseUrl = "https://www.kaiheila.cn";
         public static Config cfg;
         //error 机器人冗余消息
         private const string ChatHelp =

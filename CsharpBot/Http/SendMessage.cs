@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
-using System.Security.Policy;
 
 namespace CsharpBot
 {
@@ -13,7 +12,6 @@ namespace CsharpBot
         {
             Bot = bot;
         }
-       
 
         /// <summary>
         /// 频道id，内容
@@ -21,7 +19,7 @@ namespace CsharpBot
         /// <param name="target_id">频道id</param>
         /// <param name="content">内容</param>
         /// <returns></returns>
-        public string Channel(string target_id, string content,string url = "https://www.kaiheila.cn/api/v3/message/create")
+        public string Channel(string target_id, string content, string url = "https://www.kaiheila.cn/api/v3/message/create")
         {
             string address = url;
 
@@ -44,7 +42,7 @@ namespace CsharpBot
         }
 
         /// <summary>
-        /// 私聊回话
+        /// 私聊回话,用户id,内容
         /// </summary>
         /// <param name="target_id">用户id</param>
         /// <param name="content">内容</param>
@@ -71,23 +69,48 @@ namespace CsharpBot
             }
         }
 
-        public string Post(Url httpUrl, string contentJson)
+        /// <summary>
+        /// 通用Post方法
+        /// </summary>
+        /// <param name="httpUrl">地址</param>
+        /// <param name="contentJson">Json</param>
+        /// <returns></returns>
+        public string Post(string httpUrl, string contentJson)
         {
-        
-            string msgJson = JsonConvert.SerializeObject(contentJson);
-
             using (var client = new HttpClient())
             {
                 HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, httpUrl.ToString());
                 httpRequestMessage.Headers.Add("Authorization", " Bot " + Bot.BotToken);
-                httpRequestMessage.Content = new StringContent(msgJson);
+                httpRequestMessage.Content = new StringContent(contentJson);
                 httpRequestMessage.Content.Headers.Remove("Content-type");
                 httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
                 var result = client.SendAsync(httpRequestMessage);//返回结果
                 var res = result.Result.Content.ReadAsStringAsync();
+                res.Wait();
                 return res.Result;
             }
         }
 
+        /// <summary>
+        /// 通用Get方法
+        /// </summary>
+        /// <param name="httpUrl">地址</param>
+        /// <param name="contentJson">Json</param>
+        /// <returns></returns>
+        public string Get(string httpUrl, string contentJson)
+        {
+            using (var client = new HttpClient())
+            {
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, httpUrl.ToString());
+                httpRequestMessage.Headers.Add("Authorization", " Bot " + Bot.BotToken);
+                httpRequestMessage.Content = new StringContent(contentJson);
+                httpRequestMessage.Content.Headers.Remove("Content-type");
+                httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
+                var result = client.SendAsync(httpRequestMessage);//返回结果
+                var res = result.Result.Content.ReadAsStringAsync();
+                res.Wait();
+                return res.Result;
+            }
+        }
     }
 }
