@@ -50,7 +50,7 @@ namespace MarioMaker
             var channelType = jo["channel_type"].ToString();
 #if !DEBUG
 //error  私聊是否会受到影响？
-         if (jo["target_id"].ToString() != "8871082168907917")
+         if (jo["target_id"].ToString() != "8871082168907917"&&channelType!="PERSON")
             {
                 return;
             }
