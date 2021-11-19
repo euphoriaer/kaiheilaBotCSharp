@@ -1,16 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon />
     <StartupObject />
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>C:\Users\陈小立\Desktop\u3d\bot\kaiheilaBotCSharp\CsharpBot\Backup\</UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.27" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Websocket.Client" Version="4.3.38" />
   </ItemGroup>
-
 </Project>

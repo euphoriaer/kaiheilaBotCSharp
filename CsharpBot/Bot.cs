@@ -112,6 +112,7 @@ namespace CsharpBot
             //信令分发对象
             Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
         }
+        
 
         internal void ReceiveMsg(ResponseMessage msg)
         {
@@ -129,8 +130,8 @@ namespace CsharpBot
             //使用 通用消息分发
             var method = Distribute.GetMethod(jo["s"].ToString());
             method(jo);
-
-            //if ((int)jo["s"] == 3)
+            
+            //if ((intGetValue)jo["s"] == 3)
             //{
             //    //心跳包
             //}

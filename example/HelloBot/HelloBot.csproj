@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>C:\Users\陈小立\Desktop\u3d\bot\kaiheilaBotCSharp\CsharpBot\Backup\HelloBot\</UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\CsharpBot\CsharpBot.csproj" />
   </ItemGroup>
-
 </Project>
