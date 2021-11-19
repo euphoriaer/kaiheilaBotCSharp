@@ -12,7 +12,7 @@ namespace MarioMaker
         private static DistributeUtil<Action<JToken>, AttrMario, Program> distribute;
 
         public static Config cfg;
-
+        //error 机器人冗余消息
         private const string ChatHelp =
             "马造机器人命令" + "\n" + "\n" +
             @"注册用户：.reg 用户名\密码" + "\n" + "\n";
@@ -20,7 +20,6 @@ namespace MarioMaker
         private const string ChannelHelp =
             "马造机器人命令" + "\n" + "\n" +
             @"添加关卡：.add 关卡ID\名字\类型" + "\n" + "\n";
-        
 
         private static void Main(string[] args)
         {
@@ -31,7 +30,7 @@ namespace MarioMaker
             cfg = new Config(configPath);
             string botToken = cfg.Read("BotToken");
 #if DEBUG
-            botToken = Console.ReadLine();
+            botToken = "1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA==";//测试机器人Token
 #endif
 
             Bot = new Bot(botToken);
@@ -49,6 +48,14 @@ namespace MarioMaker
             //组合
             var cmd = jo["content"].ToString().Split(" ")[0];
             var channelType = jo["channel_type"].ToString();
+#if !DEBUG
+//error  私聊是否会受到影响？
+         if (jo["target_id"].ToString() != "8871082168907917")
+            {
+                return;
+            }
+#endif
+
             try
             {
                 //分发消息
@@ -57,9 +64,7 @@ namespace MarioMaker
             }
             catch (Exception e)
             {
-                Bot.SendMessage.Chat(jo["author_id"].ToString(), "错误" + e);
             }
-           
         }
     }
 }

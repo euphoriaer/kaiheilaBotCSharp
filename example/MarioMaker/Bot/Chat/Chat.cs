@@ -10,7 +10,7 @@ namespace MarioMaker
         private static void HelpChat(JToken jObject)
         {
             string kaiheilaId = jObject["author_id"].ToString();
-            Bot.SendMessage.Chat(kaiheilaId, ChannelHelp);
+            Bot.SendMessage.Chat(kaiheilaId, ChatHelp);
         }
 
         [AttrMario(".reg.PERSON")]
