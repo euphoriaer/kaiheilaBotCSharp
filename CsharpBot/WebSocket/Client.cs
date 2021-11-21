@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Websocket.Client;
@@ -23,6 +21,7 @@ namespace CsharpBot
         internal void ClientStart()
         {
             var exitEvent = new ManualResetEvent(false);
+            //error 重构重连，改写在有限状态机中
             if (WebsocketClient != null)
             {
                 var tast = Task.Run(WebsocketClient.Reconnect);
@@ -31,17 +30,15 @@ namespace CsharpBot
             else
             {
                 WebsocketClient = new WebsocketClient(Bot.websocketUri);
-                //error WebsocketClient 使用 有限状态机
+                //使用 有限状态机管理websocket 状态
                 WebsocketClient.DisconnectionHappened.Subscribe((info) =>
                 {
                     ClientFSM.TransitionState(ClientFSM.StateType.Disconnection, info.Type.ToString());
-                    //Console.WriteLine("客户端： 断开服务器: " + info.Type);
                 });
 
                 WebsocketClient.ReconnectionHappened.Subscribe((info) =>
                 {
                     ClientFSM.TransitionState(ClientFSM.StateType.Connection, info.Type.ToString());
-                    //Console.WriteLine("客户端： 连接服务器: " + info.Type);
                 });
 
                 WebsocketClient.MessageReceived.Subscribe(msg =>
@@ -70,6 +67,5 @@ namespace CsharpBot
             WebsocketClient.StopOrFail(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, null);
             Environment.Exit(0);
         }
-
     }
 }
