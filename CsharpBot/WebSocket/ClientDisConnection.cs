@@ -14,7 +14,7 @@ namespace CsharpBot
         void IState.OnEnter(string info)
         {
             Console.WriteLine("客户端：服务器断开: " + info);
-            //error 尝试主动重连
+            //error 需要尝试主动重连
         }
 
         void IState.OnExit()
