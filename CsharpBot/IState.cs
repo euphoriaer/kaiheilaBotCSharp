@@ -2,7 +2,7 @@
 {
     public interface IState
     {
-        void OnEnter();
+        void OnEnter(string reconnectionInfo);
         void OnExit();
     }
 }

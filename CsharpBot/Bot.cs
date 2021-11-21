@@ -68,7 +68,7 @@ namespace CsharpBot
 
         public SendMessage SendMessage;
 
-        private Client Client;
+        internal Client Client;
 
         private DistributeUtil<Action<JObject>, AttrSignal, Bot> Distribute;
 
@@ -131,79 +131,6 @@ namespace CsharpBot
             var method = Distribute.GetMethod(jo["s"].ToString());
             method(jo);
             
-            //if ((intGetValue)jo["s"] == 3)
-            //{
-            //    //心跳包
-            //}
-            //if ((int)jo["s"] == 0)
-            //{
-            //    string msgContent = jo["d"]["content"].ToString();
-
-            //    string channelType = jo["d"]["channel_type"].ToString();
-
-            //    if (MessageListen != null)
-            //    {
-            //        MessageListen(jo.ToString());
-            //    }
-
-            //    if (ChannelMsg != null && channelType == "GROUP")
-            //    {
-            //        string targetId = jo["d"]["target_id"].ToString();
-            //        ChannelMsg(msgContent, targetId);
-            //    }
-
-            //    if (ChatlMsg != null && channelType == "PERSON")
-            //    {
-            //        string targetId = jo["d"]["author_id"].ToString();
-            //        ChatlMsg(msgContent, targetId);
-            //    }
-            //}
-            //if ((int)jo["s"] == 1)
-            //{
-            //    //握手结果 400103
-            //    jo.TryGetValue("d", out JToken? d);
-            //    var code = d.Value<int>("code");
-            //    switch (code)
-            //    {
-            //        case 400100:
-            //            Console.WriteLine("客户端：缺少参数");
-            //            Client.CloseClient();
-            //            break;
-
-            //        case 400101:
-            //            Console.WriteLine("客户端：无效的 token");
-            //            Client.CloseClient();
-
-            //            break;
-
-            //        case 400102:
-            //            Console.WriteLine("客户端：token 验证失败");
-            //            Client.CloseClient();
-
-            //            break;
-
-            //        case 400103:
-            //            Console.WriteLine("客户端：token 过期");
-            //            Client.CloseClient();
-            //            break;
-
-            //        default:
-            //            Console.WriteLine("客户端：连接成功:" + "状态码，" + code);
-            //            break;
-            //    }
-            //}
-            //if ((int)jo["s"] == 5)
-            //{
-            //    Console.WriteLine("客户端：解析消息，需要断开重连:" + msg.ToString());
-            //    //需要断开重连
-            //    DataInit();//数据初始化
-            //    Client.CloseClient();//开始连接
-            //}
-            //if ((int)jo["s"] == 6)
-            //{
-            //    Console.WriteLine("客户端：解析消息，重连成功：" + msg.ToString());
-            //    //主动重连成功
-            //}
         }
 
         [AttrSignal("0")]

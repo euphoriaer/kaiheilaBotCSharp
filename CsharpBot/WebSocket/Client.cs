@@ -10,10 +10,12 @@ namespace CsharpBot
     public class Client
     {
         private Bot Bot;
+        private ClientFSM ClientFSM;//有限状态机管理websocket连接状态
 
         internal Client(Bot bot)
         {
             Bot = bot;
+            ClientFSM = new ClientFSM(bot);
         }
 
         internal WebsocketClient WebsocketClient;
@@ -30,9 +32,17 @@ namespace CsharpBot
             {
                 WebsocketClient = new WebsocketClient(Bot.websocketUri);
                 //error WebsocketClient 使用 有限状态机
-                WebsocketClient.DisconnectionHappened.Subscribe((info) => { Console.WriteLine("客户端： 断开服务器: " + info.Type); });
+                WebsocketClient.DisconnectionHappened.Subscribe((info) =>
+                {
+                    ClientFSM.TransitionState(ClientFSM.StateType.Disconnection, info.Type.ToString());
+                    //Console.WriteLine("客户端： 断开服务器: " + info.Type);
+                });
 
-                WebsocketClient.ReconnectionHappened.Subscribe((info) => { Console.WriteLine("客户端： 连接服务器: " + info.Type); });
+                WebsocketClient.ReconnectionHappened.Subscribe((info) =>
+                {
+                    ClientFSM.TransitionState(ClientFSM.StateType.Connection, info.Type.ToString());
+                    //Console.WriteLine("客户端： 连接服务器: " + info.Type);
+                });
 
                 WebsocketClient.MessageReceived.Subscribe(msg =>
                 {
@@ -42,15 +52,6 @@ namespace CsharpBot
                 var startTast = WebsocketClient.Start();
                 startTast.Wait();
             }
-
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    Ping();
-                    Thread.Sleep(30000);//30秒一次心跳包
-                }
-            });
             //todo 写一个Cmd server，将 全部功能都写成Server？
             Task.Run(() =>
             {   //客户端主动指令
@@ -70,29 +71,5 @@ namespace CsharpBot
             Environment.Exit(0);
         }
 
-        internal void Ping()
-        {
-            JObject pingJobj = new JObject();
-            pingJobj.Add("s", 2);
-            pingJobj.Add("sn", Bot.LastSn);
-            string pingJson = JsonConvert.SerializeObject(pingJobj);
-
-            Console.WriteLine("客户端：发送ping" + pingJson);
-            WebsocketClient.Send(pingJson);
-        }
-
-        /// <summary>
-        /// 主动重连
-        /// </summary>
-        internal void Resume()
-        {
-            JObject pingJobj = new JObject();
-            pingJobj.Add("s", 4);
-            pingJobj.Add("sn", Bot.LastSn);
-            string pingJson = JsonConvert.SerializeObject(pingJobj);
-
-            Console.WriteLine("客户端：发送Resume" + pingJson);
-            WebsocketClient.Send(pingJson);
-        }
     }
 }
