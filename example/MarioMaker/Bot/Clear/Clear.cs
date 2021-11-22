@@ -70,10 +70,6 @@ namespace MarioMaker
             }
         }
 
-        [AttrMario(".clear.GROUP")]
-        private static void ClearChannel(JToken jObject)
-        {
-            Bot.SendMessage.Channel(jObject["target_id"].ToString(), ClearHelp);
-        }
+       
     }
 }

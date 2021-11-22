@@ -69,10 +69,6 @@ namespace MarioMaker
             }
         }
 
-        [AttrMario(".sd.GROUP")]
-        private static void setStatusChannel(JToken jObject)
-        {
-            Bot.SendMessage.Channel(jObject["target_id"].ToString(), setStatusHelp);
-        }
+       
     }
 }

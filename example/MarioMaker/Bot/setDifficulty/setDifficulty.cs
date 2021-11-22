@@ -69,10 +69,6 @@ namespace MarioMaker
             }
         }
 
-        [AttrMario(".sd.GROUP")]
-        private static void setDifficultyChannel(JToken jObject)
-        {
-            Bot.SendMessage.Channel(jObject["target_id"].ToString(), SetDifficultyHelp);
-        }
+      
     }
 }

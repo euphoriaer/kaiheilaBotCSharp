@@ -40,10 +40,6 @@ namespace MarioMaker
             }
         }
 
-        [AttrMario(".help.GROUP")]
-        private static void HelpChannel(JToken jObject)
-        {
-            Bot.SendMessage.Channel(jObject["target_id"].ToString(), ChannelHelp);
-        }
+       
     }
 }

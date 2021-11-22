@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Bot\Channel\" />
+    <Folder Include="Bot\Help\" />
   </ItemGroup>
 
 </Project>

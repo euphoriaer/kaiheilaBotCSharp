@@ -6,12 +6,7 @@ namespace MarioMaker
 {
     internal partial class Program
     {
-        [AttrMario(".help.PERSON")]
-        private static void HelpChat(JToken jObject)
-        {
-            string kaiheilaId = jObject["author_id"].ToString();
-            Bot.SendMessage.Chat(kaiheilaId, ChatHelp);
-        }
+       
 
         [AttrMario(".reg.PERSON")]
         public static void SendRegister(JToken jObject)

@@ -70,10 +70,6 @@ namespace MarioMaker
             }
         }
 
-        [AttrMario(".sd.GROUP")]
-        private static void setVTChannel(JToken jObject)
-        {
-            Bot.SendMessage.Channel(jObject["target_id"].ToString(), setVTHelp);
-        }
+     
     }
 }
