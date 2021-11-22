@@ -6,8 +6,8 @@ namespace MarioMaker
 {
     internal partial class Program
     {
-        [AttrMario(".clear.GROUP")]
-        public static void Clear(JToken jObject)
+        [AttrMario(".ss.GROUP")]
+        public static void setStatus(JToken jObject)
         {
             var msgs = jObject["content"].ToString().Split(" ");
             string kaiheilaId = jObject["author_id"].ToString();
@@ -16,9 +16,8 @@ namespace MarioMaker
 
             JObject msgJobj = new JObject();
             msgJobj.Add("levelId", com[0]);
-            msgJobj.Add("difficultyVote", com[1]);
-            msgJobj.Add("like", com[2]);
-            msgJobj.Add("kaiheilaId", kaiheilaId);
+            msgJobj.Add("levelStatus", com[1]);
+            
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 
             #region 卡片消息实例
@@ -50,7 +49,7 @@ namespace MarioMaker
 
             using (var client = new HttpClient())//转发到鼠宝
             {
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, cfg.Read("Clear"));
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, cfg.Read("setStatus"));
                 httpRequestMessage.Content = new StringContent(msgJson);
                 httpRequestMessage.Content.Headers.Remove("Content-type");
                 httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
@@ -70,10 +69,10 @@ namespace MarioMaker
             }
         }
 
-        [AttrMario(".clear.GROUP")]
-        private static void ClearChannel(JToken jObject)
+        [AttrMario(".sd.GROUP")]
+        private static void setStatusChannel(JToken jObject)
         {
-            Bot.SendMessage.Channel(jObject["target_id"].ToString(), ClearHelp);
+            Bot.SendMessage.Channel(jObject["target_id"].ToString(), setStatusHelp);
         }
     }
 }

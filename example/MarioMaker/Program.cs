@@ -20,6 +20,18 @@ namespace MarioMaker
         private const string ChannelHelp =
             "马造机器人命令" + "\n" + "\n" +
             @"添加关卡：.add 关卡ID\名字\类型" + "\n" + "\n";
+        private const string ClearHelp =
+            "马造机器人命令" + "\n" + "\n" +
+            @"注册用户：.clear 用户名\密码" + "\n" + "\n";
+        private const string SetDifficultyHelp =
+            "马造机器人命令" + "\n" + "\n" +
+            @"注册用户：.setDifficulty 用户名\密码" + "\n" + "\n";
+        private const string setStatusHelp =
+            "马造机器人命令" + "\n" + "\n" +
+            @"注册用户：.setStatus 用户名\密码" + "\n" + "\n";
+        private const string setVTHelp =
+            "马造机器人命令" + "\n" + "\n" +
+            @"注册用户：.setVT 用户名\密码" + "\n" + "\n";
 
         private static void Main(string[] args)
         {

@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="Bot\Channel\" />
-    <Folder Include="Bot\Card\" />
   </ItemGroup>
 
 </Project>
