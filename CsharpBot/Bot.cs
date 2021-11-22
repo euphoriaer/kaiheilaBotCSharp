@@ -112,7 +112,6 @@ namespace CsharpBot
             //信令分发对象
             Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
         }
-        
 
         internal void ReceiveMsg(ResponseMessage msg)
         {
@@ -130,7 +129,6 @@ namespace CsharpBot
             //使用 通用消息分发
             var method = Distribute.GetMethod(jo["s"].ToString());
             method(jo);
-            
         }
 
         [AttrSignal("0")]

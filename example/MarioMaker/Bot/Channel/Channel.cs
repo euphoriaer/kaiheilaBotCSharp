@@ -11,7 +11,7 @@ namespace MarioMaker
         {
             var msgs = jObject["content"].ToString().Split(" ")[1].Split(@"\");
             string kaiheilaId = jObject["author_id"].ToString();
-           string targetID= jObject["target_id"].ToString();
+            string targetID = jObject["target_id"].ToString();
 
             JObject msgJobj = new JObject();
             msgJobj.Add("levelId", msgs[0]);
@@ -22,7 +22,7 @@ namespace MarioMaker
 
             using (var client = new HttpClient())
             {
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, cfg.Read("Add"));
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, Cfg.Read("Add"));
                 httpRequestMessage.Content = new StringContent(msgJson);
                 httpRequestMessage.Content.Headers.Remove("Content-type");
                 httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
@@ -32,14 +32,12 @@ namespace MarioMaker
 
                 if (string.IsNullOrEmpty(res.Result))
                 {
-                    Bot.SendMessage.Channel(targetID, "回调错误，post返回为空");
+                    _bot.SendMessage.Channel(targetID, "回调错误，post返回为空");
                     return;
                 }
 
-                Bot.SendMessage.Channel(jObject["target_id"].ToString(), "结果：" + res.Result);
+                _bot.SendMessage.Channel(jObject["target_id"].ToString(), "结果：" + res.Result);
             }
         }
-
-       
     }
 }

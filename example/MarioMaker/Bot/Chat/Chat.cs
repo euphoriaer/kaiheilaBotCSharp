@@ -6,14 +6,11 @@ namespace MarioMaker
 {
     internal partial class Program
     {
-       
-
         [AttrMario(".reg.PERSON")]
         public static void SendRegister(JToken jObject)
         {
             var msgs = jObject["content"].ToString().Split(" ")[1].Split(@"\");
             string kaiheilaId = jObject["author_id"].ToString();
-
 
             JObject msgJobj = new JObject();
             msgJobj.Add("kaiheilaId", kaiheilaId);
@@ -23,7 +20,7 @@ namespace MarioMaker
 
             using (var client = new HttpClient())
             {
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, cfg.Read("Reg"));
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, Cfg.Read("Reg"));
                 httpRequestMessage.Content = new StringContent(msgJson);
                 httpRequestMessage.Content.Headers.Remove("Content-type");
                 httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
@@ -33,11 +30,11 @@ namespace MarioMaker
 
                 if (string.IsNullOrEmpty(res.Result))
                 {
-                    Bot.SendMessage.Chat(kaiheilaId, "回调错误，post返回为空");
+                    _bot.SendMessage.Chat(kaiheilaId, "回调错误，post返回为空");
                     return;
                 }
 
-                Bot.SendMessage.Chat(kaiheilaId, "结果：" + res.Result);
+                _bot.SendMessage.Chat(kaiheilaId, "结果：" + res.Result);
             }
         }
     }

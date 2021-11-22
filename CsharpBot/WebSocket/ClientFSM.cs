@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Org.BouncyCastle.Asn1.Cmp;
-using Websocket.Client.Models;
 
 namespace CsharpBot
 {
@@ -11,8 +9,9 @@ namespace CsharpBot
         private ClientDisConnection _clientDisConnection;
         private ClientConnection _clientConnection;
 
-        internal Bot bot;
+        internal Bot Bot;
         private Dictionary<StateType, IState> states = new Dictionary<StateType, IState>();
+
         public enum StateType
         {
             Connection, Disconnection
@@ -20,12 +19,12 @@ namespace CsharpBot
 
         public ClientFSM(Bot bot)
         {
-            this.bot = bot;
+            this.Bot = bot;
             // 初始状态对象
             _clientDisConnection = new ClientDisConnection(this);
             _clientConnection = new ClientConnection(this);
-            states.Add(StateType.Disconnection,_clientDisConnection);
-            states.Add(StateType.Connection,_clientConnection);
+            states.Add(StateType.Disconnection, _clientDisConnection);
+            states.Add(StateType.Connection, _clientConnection);
             _currentState = _clientDisConnection;//初始状态未连接
         }
 

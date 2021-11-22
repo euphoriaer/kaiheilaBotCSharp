@@ -7,13 +7,13 @@ namespace CsharpBot
 {
     public class Client
     {
-        private Bot Bot;
-        private ClientFSM ClientFSM;//有限状态机管理websocket连接状态
+        private Bot _bot;
+        private ClientFSM _clientFsm;//有限状态机管理websocket连接状态
 
         internal Client(Bot bot)
         {
-            Bot = bot;
-            ClientFSM = new ClientFSM(bot);
+            _bot = bot;
+            _clientFsm = new ClientFSM(bot);
         }
 
         internal WebsocketClient WebsocketClient;
@@ -29,22 +29,22 @@ namespace CsharpBot
             }
             else
             {
-                WebsocketClient = new WebsocketClient(Bot.websocketUri);
+                WebsocketClient = new WebsocketClient(_bot.websocketUri);
                 //使用 有限状态机管理websocket 状态
                 WebsocketClient.DisconnectionHappened.Subscribe((info) =>
                 {
-                    ClientFSM.TransitionState(ClientFSM.StateType.Disconnection, info.Type.ToString());
+                    _clientFsm.TransitionState(ClientFSM.StateType.Disconnection, info.Type.ToString());
                 });
 
                 WebsocketClient.ReconnectionHappened.Subscribe((info) =>
                 {
-                    ClientFSM.TransitionState(ClientFSM.StateType.Connection, info.Type.ToString());
+                    _clientFsm.TransitionState(ClientFSM.StateType.Connection, info.Type.ToString());
                 });
 
                 WebsocketClient.MessageReceived.Subscribe(msg =>
                 {
                     //分发消息
-                    Bot.ReceiveMsg(msg);
+                    _bot.ReceiveMsg(msg);
                 });
                 var startTast = WebsocketClient.Start();
                 startTast.Wait();

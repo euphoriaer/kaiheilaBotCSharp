@@ -28,11 +28,11 @@ namespace CsharpBot
         {
             JObject pingJobj = new JObject();
             pingJobj.Add("s", 4);
-            pingJobj.Add("sn", _clientFsm.bot.LastSn);
+            pingJobj.Add("sn", _clientFsm.Bot.LastSn);
             string pingJson = JsonConvert.SerializeObject(pingJobj);
 
             Console.WriteLine("客户端：发送Resume" + pingJson);
-            _clientFsm.bot.Client.WebsocketClient.Send(pingJson);
+            _clientFsm.Bot.Client.WebsocketClient.Send(pingJson);
         }
 
     }

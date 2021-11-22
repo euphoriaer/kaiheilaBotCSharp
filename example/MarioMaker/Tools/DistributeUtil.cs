@@ -7,11 +7,11 @@ namespace MarioMaker
     [AttributeUsage(AttributeTargets.Method)]
     public abstract class DistributeAttr : Attribute
     {
-        public readonly string typeName;
+        public readonly string TypeName;
 
         public DistributeAttr(string msgName)
         {
-            this.typeName = msgName;
+            this.TypeName = msgName;
         }
     }
 
@@ -25,7 +25,7 @@ namespace MarioMaker
         where T1 : Delegate
         where T2 : DistributeAttr
     {
-        private Dictionary<string, T1> Cache;
+        private Dictionary<string, T1> _cache;
 
         /// <summary>
         ///
@@ -34,7 +34,7 @@ namespace MarioMaker
         /// <param name="bindingFlags">方法类型，public private static等等，多个判断条件用 | 连接</param>
         public DistributeUtil(object? obj)
         {
-            Cache = new Dictionary<string, T1>();
+            _cache = new Dictionary<string, T1>();
             //todo GetMethods 方法获取 是否会受到Flags在性能方面的影响（Flags 数量影响速度？）
             var methods = typeof(T3).GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
@@ -44,7 +44,7 @@ namespace MarioMaker
                 {
                     if (attribute is T2 bAtt)
                     {
-                        Cache[bAtt.typeName] = (T1)method.CreateDelegate(typeof(T1), obj);
+                        _cache[bAtt.TypeName] = (T1)method.CreateDelegate(typeof(T1), obj);
                         break;
                     }
                 }
@@ -53,7 +53,7 @@ namespace MarioMaker
 
         public T1 GetMethod(string name)
         {
-            return Cache[name];
+            return _cache[name];
         }
     }
 }

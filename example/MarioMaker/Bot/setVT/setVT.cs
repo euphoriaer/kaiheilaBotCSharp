@@ -42,7 +42,7 @@ namespace MarioMaker
             string json2 = JsonConvert.SerializeObject(dic2);
 
             //Bot.SendMessage.Channel(频道id, json2);
-            Bot.SendMessage.Post(BaseUrl + "/api/v3/message/create", json2);
+            _bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", json2);
 
 #endif
 
@@ -50,7 +50,7 @@ namespace MarioMaker
 
             using (var client = new HttpClient())//转发到鼠宝
             {
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, cfg.Read("setVT"));
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, Cfg.Read("setVT"));
                 httpRequestMessage.Content = new StringContent(msgJson);
                 httpRequestMessage.Content.Headers.Remove("Content-type");
                 httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
@@ -61,15 +61,13 @@ namespace MarioMaker
                 //如果鼠宝的消息是空的，发个报错给kaiheila
                 if (string.IsNullOrEmpty(res.Result))//转发消息给bot
                 {
-                    Bot.SendMessage.Channel(jObject["target_id"].ToString(), "回调错误，post返回为空");
+                    _bot.SendMessage.Channel(jObject["target_id"].ToString(), "回调错误，post返回为空");
                 }
                 else
                 {
-                    Bot.SendMessage.Channel(jObject["target_id"].ToString(), "" + res.Result);
+                    _bot.SendMessage.Channel(jObject["target_id"].ToString(), "" + res.Result);
                 }
             }
         }
-
-     
     }
 }
