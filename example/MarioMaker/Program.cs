@@ -12,7 +12,9 @@ namespace MarioMaker
         private static DistributeUtil<Action<JToken>, AttrMario, Program> _distributeUtil;
         private static string _baseUrl = "https://www.kaiheila.cn";
         public static Config Cfg;
-
+        private static string  RegSuccess = "[{\"type\":\"card\",\"theme\":\"info\",\"size\":\"lg\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"注册成功！\"}},{\"type\":\"divider\"}]}]";
+        private static string RegDefault = "[{\"type\":\"card\",\"theme\":\"danger\",\"size\":\"lg\",\"modules\":[{\"type\":\"header\",\"text\":{\"type\":\"plain-text\",\"content\":\"出现错误!\"}},{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"#{msg}\"}},{\"type\":\"divider\"}]}]";
+        private static string Test = "{\"code\":\"500\",\"msg\":\"https://www.sojson.com/simple_json.html\"}";
         //error 机器人冗余消息
         private const string ChatHelp =
             "马造机器人命令" + "\n" + "\n" +

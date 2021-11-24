@@ -28,13 +28,40 @@ namespace MarioMaker
                 var res = result.Result.Content.ReadAsStringAsync();
                 res.Wait();
 
+                JToken rem = JsonConvert.DeserializeObject<JToken>(res.Result);
+                if (rem["code"].ToString() == "0")
+                {
+                    JToken js1 = JsonConvert.DeserializeObject<JToken>(RegSuccess);
+                    string json1 = JsonConvert.SerializeObject(js1);//初始化注册成功的卡片消息
+
+                    JObject dic1 = new JObject();
+                    dic1.Add("type", "10");
+                    dic1.Add("content", json1);
+                    dic1.Add("target_id", kaiheilaId);
+                    string Ress1 = JsonConvert.SerializeObject(dic1);
+                    _bot.SendMessage.Post("https://www.kaiheila.cn/api/v3/direct-message/create", Ress1);
+                }
+                else if (rem["code"].ToString() == "500")
+                {
+                    JToken js2 = JsonConvert.DeserializeObject<JToken>(RegDefault);
+                    js2[0]["modules"][1]["text"]["content"] = rem["msg"];
+                    string json2 = JsonConvert.SerializeObject(js2);//初始化注册失败的卡片消息
+                    JObject dic2 = new JObject();
+                    dic2.Add("type", "10");
+                    dic2.Add("content", json2);
+                    dic2.Add("target_id", kaiheilaId);
+                    string Ress2 = JsonConvert.SerializeObject(dic2);
+                    _bot.SendMessage.Post("https://www.kaiheila.cn/api/v3/direct-message/create", Ress2);
+
+                }
+
                 if (string.IsNullOrEmpty(res.Result))
                 {
                     _bot.SendMessage.Chat(kaiheilaId, "回调错误，post返回为空");
                     return;
                 }
 
-                _bot.SendMessage.Chat(kaiheilaId, "结果：" + res.Result);
+                
             }
         }
     }

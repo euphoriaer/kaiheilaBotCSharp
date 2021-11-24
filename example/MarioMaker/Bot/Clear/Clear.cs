@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Net.Http;
 
 namespace MarioMaker
@@ -24,12 +25,13 @@ namespace MarioMaker
             #region 卡片消息实例
 
 #if DEBUG
+            //注册成功Card
             string m =
-                "[{\"type\":\"card\",\"size\":\"lg\",\"theme\":\"warning\",\"modules\":[{\"type\":\"header\",\"text\":{\"type\":\"plain-text\",\"content\":\"朋友们，今晚开黑玩什么游戏？\"}}]}]";
+                "[{\"type\":\"card\",\"theme\":\"info\",\"size\":\"lg\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"\"}},{\"type\":\"divider\"}]}]";
 
             JToken js = JsonConvert.DeserializeObject<JToken>(m);
 
-            js[0]["modules"][0]["text"]["content"] = "爷睡了";
+            js[0]["modules"][0]["text"]["content"] = "s";
 
             string n = JsonConvert.SerializeObject(js);
 
@@ -57,6 +59,10 @@ namespace MarioMaker
                 var result = client.SendAsync(httpRequestMessage); //返回结果
                 var res = result.Result.Content.ReadAsStringAsync();
                 res.Wait();
+               
+
+                
+
 
                 //如果鼠宝的消息是空的，发个报错给kaiheila
                 if (string.IsNullOrEmpty(res.Result))//转发消息给bot
