@@ -8,13 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Bot\RandomLevel\**" />
+    <EmbeddedResource Remove="Bot\RandomLevel\**" />
+    <None Remove="Bot\RandomLevel\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\CsharpBot\CsharpBot.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Bot\Channel\" />
     <Folder Include="Bot\Help\" />
-    <Folder Include="Bot\RandomLevel\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,12 +13,12 @@ namespace MarioMaker
 {
     public  class DefaultRt
     {
-        private  string RegDefault = "[{\"type\":\"card\",\"theme\":\"danger\",\"size\":\"lg\",\"modules\":[{\"type\":\"header\",\"text\":{\"type\":\"plain-text\",\"content\":\"出现错误!\"}},{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"#{msg}\"}},{\"type\":\"divider\"}]}]";
+        private  string _regDefault = "[{\"type\":\"card\",\"theme\":\"danger\",\"size\":\"lg\",\"modules\":[{\"type\":\"header\",\"text\":{\"type\":\"plain-text\",\"content\":\"出现错误!\"}},{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"#{msg}\"}},{\"type\":\"divider\"}]}]";
         
         public  void DefaultR(JToken jObject,Bot _bot, JToken rem, string targetID)
         {
 
-            JToken js2 = JsonConvert.DeserializeObject<JToken>(RegDefault);
+            JToken js2 = JsonConvert.DeserializeObject<JToken>(_regDefault);
             js2[0]["modules"][1]["text"]["content"] = rem["msg"];
             string json2 = JsonConvert.SerializeObject(js2);//初始化注册失败的卡片消息
             JObject dic2 = new JObject();

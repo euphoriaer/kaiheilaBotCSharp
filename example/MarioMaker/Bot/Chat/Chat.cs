@@ -52,16 +52,12 @@ namespace MarioMaker
                     dic2.Add("target_id", kaiheilaId);
                     string Ress2 = JsonConvert.SerializeObject(dic2);
                     _bot.SendMessage.Post("https://www.kaiheila.cn/api/v3/direct-message/create", Ress2);
-
                 }
 
                 if (string.IsNullOrEmpty(res.Result))
                 {
                     _bot.SendMessage.Chat(kaiheilaId, "回调错误，post返回为空");
-                    return;
                 }
-
-                
             }
         }
     }

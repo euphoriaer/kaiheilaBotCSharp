@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 
-
 namespace MarioMaker
 {
     internal partial class Program
@@ -13,7 +12,7 @@ namespace MarioMaker
         private static DistributeUtil<Action<JToken>, AttrMario, Program> _distributeUtil;
         private static string _baseUrl = "https://www.kaiheila.cn";
         public static Config Cfg;
-        private static string  RegSuccess = "[{\"type\":\"card\",\"theme\":\"info\",\"size\":\"lg\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"注册成功！\"}},{\"type\":\"divider\"}]}]";
+        private static string RegSuccess = "[{\"type\":\"card\",\"theme\":\"info\",\"size\":\"lg\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"注册成功！\"}},{\"type\":\"divider\"}]}]";
         private static string RegDefault = "[{\"type\":\"card\",\"theme\":\"danger\",\"size\":\"lg\",\"modules\":[{\"type\":\"header\",\"text\":{\"type\":\"plain-text\",\"content\":\"出现错误!\"}},{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"#{msg}\"}},{\"type\":\"divider\"}]}]";
         private static string ClearSuccess = "[{\"type\":\"card\",\"theme\":\"info\",\"size\":\"lg\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"恭喜你！头发又掉了一撮！\"}},{\"type\":\"divider\"}]}]";
         private static string SdSuccess = "[{\"type\":\"card\",\"theme\":\"info\",\"size\":\"lg\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"修改成功！\"}},{\"type\":\"divider\"}]}]";
@@ -36,10 +35,10 @@ namespace MarioMaker
             Console.WriteLine("在开黑啦私聊机器人 .help 查看命令");
 
             _distributeUtil = new DistributeUtil<Action<JToken>, AttrMario, Program>(null);
-            var configPath = Path.Combine(System.Environment.CurrentDirectory, "config.json");
-        
+            var configPath = Path.Combine(System.Environment.CurrentDirectory, "Config.Json");
+
             Cfg = new Config(configPath);
-            string botToken = Cfg.Read("TestBotToken");
+            string botToken = Cfg.Read("BotToken");
 #if DEBUG
             botToken = Cfg.Read("TestBotToken");//测试机器人Token "1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA=="
 #endif
