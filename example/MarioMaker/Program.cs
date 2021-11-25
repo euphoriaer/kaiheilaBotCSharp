@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using MarioMaker.Properties;
 
 namespace MarioMaker
 {
@@ -36,10 +37,11 @@ namespace MarioMaker
 
             _distributeUtil = new DistributeUtil<Action<JToken>, AttrMario, Program>(null);
             var configPath = Path.Combine(System.Environment.CurrentDirectory, "Config.Json");
+        
             Cfg = new Config(configPath);
             string botToken = Cfg.Read("BotToken");
 #if DEBUG
-            botToken = "1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA==";//测试机器人Token
+            botToken = Cfg.Read("TestBotToken");//测试机器人Token "1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA=="
 #endif
 
             _bot = new Bot(botToken);
