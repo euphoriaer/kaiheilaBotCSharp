@@ -32,7 +32,7 @@ namespace MarioMaker
                 httpRequestMessage.Content.Headers.Remove("Content-type");
                 httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
                 var result = client.SendAsync(httpRequestMessage); //返回结果
-                var res = result.Result.Content.ReadAsStringAsync();
+                var res = result.Result.Content.ReadAsStringAsync();          
                 res.Wait();
 
                 JToken rem = JsonConvert.DeserializeObject<JToken>(res.Result);//解析返回的json

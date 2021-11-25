@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
-using MarioMaker.Properties;
+
 
 namespace MarioMaker
 {
@@ -36,10 +36,10 @@ namespace MarioMaker
             Console.WriteLine("在开黑啦私聊机器人 .help 查看命令");
 
             _distributeUtil = new DistributeUtil<Action<JToken>, AttrMario, Program>(null);
-            var configPath = Path.Combine(System.Environment.CurrentDirectory, "Config.Json");
+            var configPath = Path.Combine(System.Environment.CurrentDirectory, "config.json");
         
             Cfg = new Config(configPath);
-            string botToken = Cfg.Read("BotToken");
+            string botToken = Cfg.Read("TestBotToken");
 #if DEBUG
             botToken = Cfg.Read("TestBotToken");//测试机器人Token "1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA=="
 #endif
