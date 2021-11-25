@@ -11,7 +11,7 @@ namespace MarioMaker
         {
             var msgs = jObject["content"].ToString().Split(" ");
             string kaiheilaId = jObject["author_id"].ToString();
-            string 频道id = jObject["target_id"].ToString();
+            string targetId = jObject["target_id"].ToString();
             var com = msgs[1].Split(@"\");//字符分割为数组
 
             JObject msgJobj = new JObject();
@@ -21,32 +21,7 @@ namespace MarioMaker
 
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 
-            #region 卡片消息实例
 
-#if DEBUG
-            string m =
-                "[{\"type\":\"card\",\"size\":\"lg\",\"theme\":\"warning\",\"modules\":[{\"type\":\"header\",\"text\":{\"type\":\"plain-text\",\"content\":\"朋友们，今晚开黑玩什么游戏？\"}}]}]";
-
-            JToken js = JsonConvert.DeserializeObject<JToken>(m);
-
-            js[0]["modules"][0]["text"]["content"] = "爷睡了";
-
-            string n = JsonConvert.SerializeObject(js);
-
-            JObject dic2 = new JObject();//开始组装
-            dic2.Add("type", "10"); //卡片消息
-            dic2.Add("target_id", 频道id);//要发的频道
-            dic2.Add("content", n);//鼠宝返回的内容
-
-            //组装完毕，转Josn
-            string json2 = JsonConvert.SerializeObject(dic2);
-
-            //Bot.SendMessage.Channel(频道id, json2);
-            _bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", json2);
-
-#endif
-
-            #endregion 卡片消息实例
 
             using (var client = new HttpClient())//转发到鼠宝
             {
@@ -58,14 +33,33 @@ namespace MarioMaker
                 var res = result.Result.Content.ReadAsStringAsync();
                 res.Wait();
 
-                //如果鼠宝的消息是空的，发个报错给kaiheila
-                if (string.IsNullOrEmpty(res.Result))//转发消息给bot
+                JToken rem = JsonConvert.DeserializeObject<JToken>(res.Result);//解析返回的json
+                if (rem["code"].ToString() == "0")
                 {
-                    _bot.SendMessage.Channel(jObject["target_id"].ToString(), "回调错误，post返回为空");
+                    JToken js1 = JsonConvert.DeserializeObject<JToken>(SdSuccess);
+                    string json1 = JsonConvert.SerializeObject(js1);//初始化注册成功的卡片消息
+
+                    JObject dic1 = new JObject();
+                    dic1.Add("type", "10");
+                    dic1.Add("content", json1);
+                    dic1.Add("target_id", kaiheilaId);
+                    string Ress1 = JsonConvert.SerializeObject(dic1);
+                    _bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", Ress1);
                 }
-                else
+                else if (rem["code"].ToString() == "500")
                 {
-                    _bot.SendMessage.Channel(jObject["target_id"].ToString(), "" + res.Result);
+                    DefaultRt dd = new DefaultRt();
+                    dd.DefaultR(jObject, _bot, rem, targetId);
+                    //JToken js2 = JsonConvert.DeserializeObject<JToken>(RegDefault);
+                    //js2[0]["modules"][1]["text"]["content"] = rem["msg"];
+                    //string json2 = JsonConvert.SerializeObject(js2);//初始化注册失败的卡片消息
+                    //JObject dic2 = new JObject();
+                    //dic2.Add("type", "10");
+                    //dic2.Add("content", json2);
+                    //dic2.Add("target_id", targetID );
+                    //string Ress2 = JsonConvert.SerializeObject(dic2);
+                    //_bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", Ress2);
+
                 }
             }
         }

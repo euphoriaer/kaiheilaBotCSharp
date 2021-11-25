@@ -14,6 +14,7 @@
   <ItemGroup>
     <Folder Include="Bot\Channel\" />
     <Folder Include="Bot\Help\" />
+    <Folder Include="Bot\RandomLevel\" />
   </ItemGroup>
 
 </Project>

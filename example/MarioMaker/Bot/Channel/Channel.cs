@@ -39,7 +39,7 @@ namespace MarioMaker
                 if (rem["code"].ToString() == "0")
                 {
                     JToken js1 = JsonConvert.DeserializeObject<JToken>(RegSuccess);
-                    string m = "**关卡id：" + rem["data"]["levelId"] + "**\\n**关卡名字：" + rem["data"]["levelName"] + "**\\n**关卡类型：" + rem["data"]["levelTypeStr"]+ "**\\n***                                   成  功  上  传  ！！！！！***";
+                    string m = "**关卡id：" + rem["data"]["levelId"] + "**\n**关卡名字：" + rem["data"]["levelName"] + "**\n**关卡类型：" + rem["data"]["levelTypeStr"]+ "**\n***                                   成  功  上  传  ！！！！！***";
                     js1[0]["modules"][0]["text"]["content"] = m;
                     string json1 = JsonConvert.SerializeObject(js1);//初始化注册成功的卡片消息
 
