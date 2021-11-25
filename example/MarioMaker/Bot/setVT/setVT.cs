@@ -18,7 +18,7 @@ namespace MarioMaker
             msgJobj.Add("levelId", com[0]);
             msgJobj.Add("video", com[1]);
             msgJobj.Add("tag", com[2]);
-
+            msgJobj.Add("kaiheilaId", kaiheilaId);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 
 
