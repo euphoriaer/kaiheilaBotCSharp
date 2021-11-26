@@ -47,7 +47,7 @@ namespace MarioMaker
                     JObject dic1 = new JObject();
                     dic1.Add("type", "10");
                     dic1.Add("content", json1);
-                    dic1.Add("target_id", kaiheilaId);
+                    dic1.Add("target_id", targetId);
                     string Ress1 = JsonConvert.SerializeObject(dic1);
                     _bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", Ress1);
                 }

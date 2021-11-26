@@ -30,7 +30,9 @@ namespace MarioMaker
             @".clear 关卡id\关卡难度\是否喜欢" + "\n" + "\n" +
             @".sd 关卡id\关卡难度" + "\n" + "\n" +
             @".ss 关卡id\关卡状态" + "\n" + "\n" +
-            @".sv 关卡id\视频地址\简介" + "\n" + "\n";
+            @".sv 关卡id\视频地址\简介" + "\n" + "\n"+
+            @".r 关卡难度" + "\n" + "\n" +
+            @".d 关卡名" + "\n" + "\n" ;
 
         private static void Main(string[] args)
         {
