@@ -1,12 +1,12 @@
- {
-  "TestBotToken":"1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA==",
+{
+  "TestBotToken": "1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA==",
   "BotToken": "",
-  "Reg": "http://106.54.162.77/:8082/register",
-  "Add": "http://106.54.162.77/:8082/kh/addLevel",
-  "Clear": "http://106.54.162.77/:8082:8082/kh/clear",
-  "Sd": "http://106.54.162.77/:8082/kh/setDifficulty",
-  "Ss": "http://106.54.162.77/:8082/kh/setStatus",
-  "Sv": "http://106.54.162.77/:8082/kh/setVT",
-  "R": "http://106.54.162.77/:8082/kh/giveMeLevel"
-
+  "Reg": "http://106.54.162.77:8082/register",
+  "Add": "http://106.54.162.77:8082/kh/addLevel",
+  "Clear": "http://106.54.162.77:8082/kh/clear",
+  "Sd": "http://106.54.162.77:8082/kh/setDifficulty",
+  "Ss": "http://106.54.162.77:8082/kh/setStatus",
+  "Sv": "http://106.54.162.77:8082/kh/setVT",
+  "R": "http://106.54.162.77:8082/kh/giveMeLevel",
+  "D": "http://106.54.162.77:8082/kh/queryLevelDetail"
 }

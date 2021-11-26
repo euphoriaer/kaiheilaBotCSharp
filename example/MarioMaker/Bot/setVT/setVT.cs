@@ -16,8 +16,8 @@ namespace MarioMaker
 
             JObject msgJobj = new JObject();
             msgJobj.Add("levelId", com[0]);
-            msgJobj.Add("video", com[1]);
-            msgJobj.Add("tag", com[2]);
+            msgJobj.Add("video", com[2]);
+            msgJobj.Add("tag", com[1]);
             msgJobj.Add("kaiheilaId", kaiheilaId);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 
@@ -42,7 +42,7 @@ namespace MarioMaker
                     JObject dic1 = new JObject();
                     dic1.Add("type", "10");
                     dic1.Add("content", json1);
-                    dic1.Add("target_id", kaiheilaId);
+                    dic1.Add("target_id", targetId);
                     string Ress1 = JsonConvert.SerializeObject(dic1);
                     _bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", Ress1);
                 }

@@ -16,6 +16,8 @@ namespace MarioMaker
         private static string RegDefault = "[{\"type\":\"card\",\"theme\":\"danger\",\"size\":\"lg\",\"modules\":[{\"type\":\"header\",\"text\":{\"type\":\"plain-text\",\"content\":\"出现错误!\"}},{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"#{msg}\"}},{\"type\":\"divider\"}]}]";
         private static string ClearSuccess = "[{\"type\":\"card\",\"theme\":\"info\",\"size\":\"lg\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"恭喜你！头发又掉了一撮！\"}},{\"type\":\"divider\"}]}]";
         private static string SdSuccess = "[{\"type\":\"card\",\"theme\":\"info\",\"size\":\"lg\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"修改成功！\"}},{\"type\":\"divider\"}]}]";
+        private static string RSuccess = "[{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#98FB98\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"**你随机到了 ***#{levelId}***,以下是关卡信息： **\"}}]},{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#98FB98\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"\"}}]}]";
+        private static string DSuccess = "[{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#98FB98\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"**你查询的关卡名为 ***#{levelId}***,以下是关卡信息： **\"}}]},{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#98FB98\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"\"}}]}]";
 
         //error 机器人冗余消息
         private const string ChatHelp =
@@ -27,7 +29,7 @@ namespace MarioMaker
             @".add 关卡ID\名字\类型" + "\n" + "\n" +
             @".clear 关卡id\关卡难度\是否喜欢" + "\n" + "\n" +
             @".sd 关卡id\关卡难度" + "\n" + "\n" +
-            @".ss 关卡id\关卡\关卡状态" + "\n" + "\n" +
+            @".ss 关卡id\关卡状态" + "\n" + "\n" +
             @".sv 关卡id\视频地址\简介" + "\n" + "\n";
 
         private static void Main(string[] args)
