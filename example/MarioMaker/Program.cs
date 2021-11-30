@@ -39,7 +39,7 @@ namespace MarioMaker
             Console.WriteLine("在开黑啦私聊机器人 .help 查看命令");
 
             _distributeUtil = new DistributeUtil<Action<JToken>, AttrMario, Program>(null);
-            var configPath = Path.Combine(System.Environment.CurrentDirectory, "Config.Json");
+            var configPath = Path.Combine(System.Environment.CurrentDirectory, "config.json");
 
             Cfg = new Config(configPath);
             string botToken = Cfg.Read("BotToken");

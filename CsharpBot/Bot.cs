@@ -132,7 +132,7 @@ namespace CsharpBot
         }
 
         [AttrSignal("0")]
-        public void Signal0(JObject jo)
+        private void Signal0(JObject jo)
         {
             string msgContent = jo["d"]["content"].ToString();
 
@@ -157,7 +157,7 @@ namespace CsharpBot
         }
 
         [AttrSignal("1")]
-        public void Signal1(JObject jo)
+        private void Signal1(JObject jo)
         {
             //握手结果 400103
             jo.TryGetValue("d", out JToken? d);
@@ -193,13 +193,13 @@ namespace CsharpBot
         }
 
         [AttrSignal("3")]
-        public void Signal3(JObject jo)
+        private void Signal3(JObject jo)
         {
             //心跳包
         }
 
         [AttrSignal("5")]
-        public void Signal5(JObject jo)
+        private void Signal5(JObject jo)
         {
             Console.WriteLine("客户端：解析消息，需要断开重连:");
             //需要断开重连
@@ -208,7 +208,7 @@ namespace CsharpBot
         }
 
         [AttrSignal("6")]
-        public void Signal6(JObject jo)
+        private void Signal6(JObject jo)
         {
             Console.WriteLine("客户端：解析消息，重连成功");
             //主动重连成功

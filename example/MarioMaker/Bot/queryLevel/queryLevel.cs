@@ -11,7 +11,7 @@ namespace MarioMaker
         public static void QueryLevel(JToken jObject)
         {
 
-            var msgs = jObject["content"].ToString().Split(" ")[1].Split(@"\");
+            var msgs = jObject["content"].ToString().Split(" ");
             string kaiheilaId = jObject["author_id"].ToString();
             string targetID = jObject["target_id"].ToString();
 
@@ -19,7 +19,7 @@ namespace MarioMaker
 
             
             JObject msgJobj = new JObject();
-            msgJobj.Add("levelId", msgs[0]);
+            msgJobj.Add("levelId", msgs[1]);
             msgJobj.Add("kaiheilaId", kaiheilaId);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 

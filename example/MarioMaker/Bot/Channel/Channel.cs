@@ -11,7 +11,7 @@ namespace MarioMaker
         public static void AddGuanqia(JToken jObject)
         {
 
-            var msgs = jObject["content"].ToString().Split(" ")[1].Split(@"\");
+            var msgs = jObject["content"].ToString().Split(" ");
             string kaiheilaId = jObject["author_id"].ToString();
             string targetID = jObject["target_id"].ToString();
 
@@ -19,9 +19,9 @@ namespace MarioMaker
 
             
             JObject msgJobj = new JObject();
-            msgJobj.Add("levelId", msgs[0]);
-            msgJobj.Add("levelName", msgs[1]);
-            msgJobj.Add("levelType", msgs[2]);
+            msgJobj.Add("levelId", msgs[1]);
+            msgJobj.Add("levelName", msgs[2]);
+            msgJobj.Add("levelType", msgs[3]);
             msgJobj.Add("kaiheilaId", kaiheilaId);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 
@@ -54,16 +54,6 @@ namespace MarioMaker
                 {
                     DefaultRt dd = new DefaultRt();
                     dd.DefaultR(jObject, _bot, rem, targetID);
-                    //JToken js2 = JsonConvert.DeserializeObject<JToken>(RegDefault);
-                    //js2[0]["modules"][1]["text"]["content"] = rem["msg"];
-                    //string json2 = JsonConvert.SerializeObject(js2);//初始化注册失败的卡片消息
-                    //JObject dic2 = new JObject();
-                    //dic2.Add("type", "10");
-                    //dic2.Add("content", json2);
-                    //dic2.Add("target_id", targetID );
-                    //string Ress2 = JsonConvert.SerializeObject(dic2);
-                    //_bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", Ress2);
-
                 }
 
 
