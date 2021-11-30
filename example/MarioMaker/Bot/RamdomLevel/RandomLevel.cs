@@ -38,7 +38,7 @@ namespace MarioMaker
                 {
                     JToken js1 = JsonConvert.DeserializeObject<JToken>(RSuccess);
                    
-                    string m = "**名字：" + rem["data"][0]["levelName"] + "**\n**作者：" + rem["data"][0]["creator"] + "**\n**关卡类型：" + rem["data"][0]["levelTypeStr"] + "**\n**难度/平均难度：" + rem["data"][0]["difficulty"]+"/"+ rem["data"][0]["difficultyVote"] + "**\n**过关人数：" + rem["data"][0]["clear"] + "**\n**喜欢：" + rem["data"][0]["like"] + "**\n**视频地址：" + rem["data"][0]["video"] + "**\n**简介：" + rem["data"][0]["tag"] + "**\n状态：" + rem["data"][0]["leveStatusStr"];
+                    string m = "**名字：**" + rem["data"][0]["levelName"] + "\n**作者：**" + rem["data"][0]["creator"] + "\n**关卡类型：**" + rem["data"][0]["levelTypeStr"] + "\n**难度/平均难度：**" + rem["data"][0]["difficulty"]+"/"+ rem["data"][0]["difficultyVote"] + "\n**过关人数：**" + rem["data"][0]["clear"] + "\n**喜欢：**" + rem["data"][0]["like"] + "\n**视频地址：**" + rem["data"][0]["video"] + "\n**简介：**" + rem["data"][0]["tag"] + "\n**状态：**" + rem["data"][0]["levelStatusStr"];
                     string v = "**你随机到了 ***"+rem["data"][0]["levelId"]+"***,以下是关卡信息： **";
                     js1[0]["modules"][0]["text"]["content"] = v;
 
