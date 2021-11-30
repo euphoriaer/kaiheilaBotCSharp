@@ -9,13 +9,13 @@ namespace MarioMaker
         [AttrMario(".reg.PERSON")]
         public static void SendRegister(JToken jObject)
         {
-            var msgs = jObject["content"].ToString().Split(" ")[1].Split(@"\");
+            var msgs = jObject["content"].ToString().Split(" ");
             string kaiheilaId = jObject["author_id"].ToString();
 
             JObject msgJobj = new JObject();
             msgJobj.Add("kaiheilaId", kaiheilaId);
-            msgJobj.Add("playerName", msgs[0]);
-            msgJobj.Add("password", msgs[1]);
+            msgJobj.Add("playerName", msgs[1]);
+            msgJobj.Add("password", msgs[2]);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 
             using (var client = new HttpClient())

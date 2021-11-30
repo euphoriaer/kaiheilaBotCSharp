@@ -12,11 +12,11 @@ namespace MarioMaker
             var msgs = jObject["content"].ToString().Split(" ");
             string kaiheilaId = jObject["author_id"].ToString();
             string targetId = jObject["target_id"].ToString();
-            var com = msgs[1].Split(@"\");//字符分割为数组
+           // var com = msgs[1].Split(@"\");//字符分割为数组
 
             JObject msgJobj = new JObject();
-            msgJobj.Add("levelId", com[0]);
-            msgJobj.Add("levelStatus", com[1]);
+            msgJobj.Add("levelId", msgs[1]);
+            msgJobj.Add("levelStatus", msgs[2]);
             msgJobj.Add("kaiheilaId", kaiheilaId);
 
             string msgJson = JsonConvert.SerializeObject(msgJobj);
