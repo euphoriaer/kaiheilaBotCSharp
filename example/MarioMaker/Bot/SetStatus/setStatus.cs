@@ -9,7 +9,10 @@ namespace MarioMaker
         [AttrMario(".ss.GROUP")]
         public static void setStatus(JToken jObject)
         {
-            var msgs = jObject["content"].ToString().Split(" ");
+            string wholeMsg = jObject["content"].ToString();
+            int spaceIndex = wholeMsg.IndexOf(" ");//定位第一个空格
+            var msgs = wholeMsg.Substring(spaceIndex).Split(@"\");//空格后面的是参数
+
             string kaiheilaId = jObject["author_id"].ToString();
             string targetId = jObject["target_id"].ToString();
            // var com = msgs[1].Split(@"\");//字符分割为数组
