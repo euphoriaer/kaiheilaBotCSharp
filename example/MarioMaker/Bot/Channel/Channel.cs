@@ -17,9 +17,9 @@ namespace MarioMaker
             string targetID = jObject["target_id"].ToString();
 
             JObject msgJobj = new JObject();
-            msgJobj.Add("levelId", msgs[1]);
-            msgJobj.Add("levelName", msgs[2]);
-            msgJobj.Add("levelType", msgs[3]);
+            msgJobj.Add("levelId", msgs[0]);
+            msgJobj.Add("levelName", msgs[1]);
+            msgJobj.Add("levelType", msgs[2]);
             msgJobj.Add("kaiheilaId", kaiheilaId);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 

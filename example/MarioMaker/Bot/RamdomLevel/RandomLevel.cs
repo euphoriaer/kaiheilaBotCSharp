@@ -22,7 +22,7 @@ namespace MarioMaker
 
             
             JObject msgJobj = new JObject();
-            msgJobj.Add("difficulty", msgs[1]);
+            msgJobj.Add("difficulty", msgs[0]);
             msgJobj.Add("kaiheilaId", kaiheilaId);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 

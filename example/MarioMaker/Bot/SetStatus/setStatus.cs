@@ -18,8 +18,8 @@ namespace MarioMaker
            // var com = msgs[1].Split(@"\");//字符分割为数组
 
             JObject msgJobj = new JObject();
-            msgJobj.Add("levelId", msgs[1]);
-            msgJobj.Add("levelStatus", msgs[2]);
+            msgJobj.Add("levelId", msgs[0]);
+            msgJobj.Add("levelStatus", msgs[1]);
             msgJobj.Add("kaiheilaId", kaiheilaId);
 
             string msgJson = JsonConvert.SerializeObject(msgJobj);

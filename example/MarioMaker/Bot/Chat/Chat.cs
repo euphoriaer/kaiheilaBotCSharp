@@ -17,8 +17,8 @@ namespace MarioMaker
 
             JObject msgJobj = new JObject();
             msgJobj.Add("kaiheilaId", kaiheilaId);
-            msgJobj.Add("playerName", msgs[1]);
-            msgJobj.Add("password", msgs[2]);
+            msgJobj.Add("playerName", msgs[0]);
+            msgJobj.Add("password", msgs[1]);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
 
             using (var client = new HttpClient())
