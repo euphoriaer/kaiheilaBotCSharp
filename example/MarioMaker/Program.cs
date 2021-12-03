@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MarioMaker
 {
@@ -19,8 +21,12 @@ namespace MarioMaker
         private static string RSuccess = "[{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#98FB98\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"**你随机到了 ***#{levelId}***,以下是关卡信息： **\"}}]},{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#98FB98\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"\"}}]}]";
         private static string DSuccess = "[{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#98FB98\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"**你查询的关卡名为 ***#{levelId}***,以下是关卡信息： **\"}}]},{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#98FB98\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"\"}}]}]";
 
+        private static string RTSucess = "[{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#98FB98\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"**你随机到了 ***#{levelId}***,以下是关卡信息： **\"}}]},{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#98FB98\",\"modules\":[{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"**名字：**#{levelName}\\n**作者：**#{creator}\\n**类型：**#{levelTypeStr}\\n**难度/平均难度：**#{difficulty}/#{difficultyVote}\\n**过关人数：**#{clear}\\n**喜欢：**#{like}\\n**视频地址：**[#{video}](#{video})\\n**简介：**#{tag}\\n**状态：**#{leveStatusStr}\\n\"}}]}]";
+
+        private static string Time =
+            "[{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#FF1493\",\"modules\":[{\"type\":\"header\",\"text\":{\"type\":\"plain-text\",\"content\":\"                                  ~每日推送~\"}},{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"今天是服务器运行的第 #{dayId} 天。\\n服务器共计 #{levelSum} 个关卡，较昨日新增了 #{levelSub} 关。\\n昨日大家共计过了 #{levelSumAll} 关\"}},{\"type\":\"divider\"}]}]";
         //error 机器人冗余消息
-        private const string ChatHelp =
+private const string ChatHelp =
             "马造机器人命令" + "\n" + "\n" +
             @"注册：.reg 用户名\密码" + "\n" + "\n";
 
@@ -47,11 +53,16 @@ namespace MarioMaker
 #if DEBUG
             botToken = Cfg.Read("TestBotToken");//测试机器人Token "1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA=="
 #endif
-
+            Task.Run((() =>
+            {
+                Thread.Sleep(10000);//每十秒获取一次当前时间
+                TimeSend();
+            }));
             _bot = new Bot(botToken);
 
             _bot.MessageListen += Message;
             _bot.Run();
+           
         }
 
         private static void Message(string msg)
@@ -64,8 +75,8 @@ namespace MarioMaker
             var cmd = jo["content"].ToString().Split(" ")[0];
             var channelType = jo["channel_type"].ToString();
 #if !DEBUG
-//error  私聊是否会受到影响？
-         if (jo["target_id"].ToString() != "8871082168907917"&&channelType!="PERSON")
+            //error  私聊是否会受到影响？
+            if (jo["target_id"].ToString() != "8871082168907917" && channelType != "PERSON")
             {
                 return;
             }
