@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 
@@ -11,7 +12,7 @@ namespace MarioMaker
         {
             string wholeMsg = jObject["content"].ToString();
             int spaceIndex = wholeMsg.IndexOf(" ");//定位第一个空格
-            var msgs = wholeMsg.Substring(spaceIndex).Split(@"\");//空格后面的是参数
+            var msgs = wholeMsg.Substring(spaceIndex + 1).Split(@"\");
 
             string kaiheilaId = jObject["author_id"].ToString();
             string targetId = jObject["target_id"].ToString();
@@ -22,7 +23,7 @@ namespace MarioMaker
             msgJobj.Add("like", msgs[2]);
             msgJobj.Add("kaiheilaId", kaiheilaId);
             string msgJson = JsonConvert.SerializeObject(msgJobj);
-
+            Console.WriteLine("往鼠宝发送信息: " + msgJson);
             using (var client = new HttpClient())//转发到鼠宝
             {
                 var res = SendShu(Cfg.Read("Clear"), msgJson);

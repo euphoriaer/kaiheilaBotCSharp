@@ -80,7 +80,7 @@ namespace MarioMaker
             var channelType = jo["channel_type"].ToString();
 
 
-            if (jo["author_id"].ToString() == "1076814837"|| jo["author_id"].ToString() == "665867029")
+            if (jo["author_id"].ToString() == "1076814837" || jo["author_id"].ToString() == "665867029")
             {
                 //屏蔽机器人自己的消息
                 return;
