@@ -49,12 +49,10 @@ namespace MarioMaker
 
                 string pinzhuangContent2 =
                     $"**名字：**#{levelName}\n**作者：**#{creator}\n**类型：**#{levelTypeStr}\n**难度/平均难度：**#{difficulty}/#{difficultyVote}\n**过关人数：**#{clear}\n**喜欢：**#{like}\n**视频地址：**[#{video}](#{video})\n**简介：**#{tag}\n**状态：**#{levelStatusStr}\n";
-                
 
                 var json1 = JsonConvert.DeserializeObject<JToken>(RTSucess);//初始化注册成功的卡片消息
                 json1[0]["modules"][0]["text"]["content"] = pinzhuangContent1;
                 json1[1]["modules"][0]["text"]["content"] = pinzhuangContent2;
-
 
                 JObject dic1 = new JObject();
                 dic1.Add("type", "10");
@@ -62,7 +60,6 @@ namespace MarioMaker
                 dic1.Add("target_id", targetID);
                 string Ress1 = JsonConvert.SerializeObject(dic1);
                 _bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", Ress1);
-
             }
         }
     }

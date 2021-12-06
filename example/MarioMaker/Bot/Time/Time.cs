@@ -1,19 +1,18 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Threading.Tasks;
 
 namespace MarioMaker
 {
     internal partial class Program
     {
-     
         public static bool CanSend = false;
+
         public static void TimeSend()
         {
             int curHour = DateTime.Now.Hour;
             Console.WriteLine("当前时间为 ：" + curHour);
-            if (curHour==6&& CanSend)
+            if (curHour == 6 && CanSend)
             {
                 SendTimeMsg("9237630566057358");
                 SendTimeMsg("9960624620226581");
@@ -26,7 +25,6 @@ namespace MarioMaker
             {
                 CanSend = true;
             }
-
         }
 
         private static void SendTimeMsg(string targetId)
@@ -38,7 +36,7 @@ namespace MarioMaker
             string levelNum = msgShus["data"]["levelNum"].ToString();
             string levelSumAll = msgShus["data"]["levelSumAll"].ToString();
             string levelSub = msgShus["data"]["levelSub"].ToString();
-          
+
             string pinzhuangContent1 =
                 $"今天是服务器运行的第 #{dayId} 天。\n服务器共计 #{levelNum} 个关卡，较昨日新增了 #{levelSub} 关。\n昨日大家共计过了 #{levelSumAll} 关";
 
@@ -49,7 +47,6 @@ namespace MarioMaker
             dic1.Add("type", "10");
             dic1.Add("content", json1);
             dic1.Add("target_id", targetId);//error 要发送的频道ID
-
 
             string Ress1 = JsonConvert.SerializeObject(dic1);
             _bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", Ress1);

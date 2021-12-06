@@ -25,15 +25,9 @@ namespace MarioMaker
 
             using (var client = new HttpClient())//转发到鼠宝
             {
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, Cfg.Read("Clear"));
-                httpRequestMessage.Content = new StringContent(msgJson);
-                httpRequestMessage.Content.Headers.Remove("Content-type");
-                httpRequestMessage.Content.Headers.Add("Content-type", "application/json");
-                var result = client.SendAsync(httpRequestMessage); //返回结果
-                var res = result.Result.Content.ReadAsStringAsync();
-                res.Wait();
+                var res = SendShu(Cfg.Read("Clear"), msgJson);
 
-                JToken rem = JsonConvert.DeserializeObject<JToken>(res.Result);//解析返回的json
+                JToken rem = JsonConvert.DeserializeObject<JToken>(res);//解析返回的json
                 if (rem["code"].ToString() == "0")
                 {
                     JToken js1 = JsonConvert.DeserializeObject<JToken>(ClearSuccess);

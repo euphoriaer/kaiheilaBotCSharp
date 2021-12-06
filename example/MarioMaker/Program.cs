@@ -11,6 +11,7 @@ namespace MarioMaker
     internal partial class Program
     {
         private static Bot _bot;
+        private static Log _log;
         private static DistributeUtil<Action<JToken>, AttrMario, Program> _distributeUtil;
         private static string _baseUrl = "https://www.kaiheila.cn";
         public static Config Cfg;
@@ -25,10 +26,11 @@ namespace MarioMaker
 
         private static string Time =
             "[{\"type\":\"card\",\"theme\":\"secondary\",\"size\":\"lg\",\"color\":\"#FF1493\",\"modules\":[{\"type\":\"header\",\"text\":{\"type\":\"plain-text\",\"content\":\"                                  ~每日推送~\"}},{\"type\":\"section\",\"text\":{\"type\":\"kmarkdown\",\"content\":\"今天是服务器运行的第 #{dayId} 天。\\n服务器共计 #{levelSum} 个关卡，较昨日新增了 #{levelSub} 关。\\n昨日大家共计过了 #{levelSumAll} 关\"}},{\"type\":\"divider\"}]}]";
+
         //error 机器人冗余消息
-private const string ChatHelp =
-            "马造机器人命令" + "\n" + "\n" +
-            @"注册：.reg 用户名\密码" + "\n" + "\n";
+        private const string ChatHelp =
+                    "马造机器人命令" + "\n" + "\n" +
+                    @"注册：.reg 用户名\密码" + "\n" + "\n";
 
         private const string ChannelHelp =
             "马造机器人命令" + "\n" + "\n" +
@@ -55,14 +57,16 @@ private const string ChatHelp =
 #endif
             Task.Run((() =>
             {
-                Thread.Sleep(10000);//每十秒获取一次当前时间
-                TimeSend();
+                while (true)
+                {
+                    Thread.Sleep(10000);//每十秒获取一次当前时间
+                    TimeSend();
+                }
             }));
             _bot = new Bot(botToken);
-
+            _log = new Log(Path.Combine(System.Environment.CurrentDirectory, "LogFolder"), 30);
             _bot.MessageListen += Message;
             _bot.Run();
-           
         }
 
         private static void Message(string msg)
@@ -74,6 +78,13 @@ private const string ChatHelp =
             //组合
             var cmd = jo["content"].ToString().Split(" ")[0];
             var channelType = jo["channel_type"].ToString();
+
+
+            if (jo["author_id"].ToString() == "1076814837"|| jo["author_id"].ToString() == "665867029")
+            {
+                //屏蔽机器人自己的消息
+                return;
+            }
 #if !DEBUG
             //error  私聊是否会受到影响？
             if (jo["target_id"].ToString() != "8871082168907917" && channelType != "PERSON")
@@ -81,7 +92,7 @@ private const string ChatHelp =
                 return;
             }
 #endif
-
+            _log.Record("收到开黑啦消息" + msg);
             try
             {
                 //分发消息

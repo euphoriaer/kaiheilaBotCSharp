@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Net.Http;
 
 namespace MarioMaker
 {
@@ -10,7 +8,6 @@ namespace MarioMaker
         [AttrMario(".F.GROUP")]
         public static void FF(JToken jObject)
         {
-
             string wholeMsg = jObject["content"].ToString();
             int spaceIndex = wholeMsg.IndexOf(" ");//定位第一个空格
             var msgs = wholeMsg.Substring(spaceIndex).Split(@"\");//空格后面的是参数
@@ -29,7 +26,6 @@ namespace MarioMaker
             dic1.Add("target_id", targetID);
             string Ress1 = JsonConvert.SerializeObject(dic1);
             _bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", Ress1);
-
         }
     }
 }
