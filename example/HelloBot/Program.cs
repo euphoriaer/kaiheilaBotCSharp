@@ -42,6 +42,5 @@ namespace HelloBot
                 bot.SendMessage.Channel(targetID, "我是机器人。你好");
             }
         }
-
     }
 }

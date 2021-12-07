@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-internal class Log
+public class Log
 {
     /// <summary>
     /// 文件名与文件路径
@@ -12,16 +12,19 @@ internal class Log
     private Dictionary<string, string> LogsDictionary = new Dictionary<string, string>();
 
     private string LogFolder;
-    private static bool CanDelete = false;
-    private static int OverdueDay;
+    private bool CanDelete = false;
+    private int OverdueDay;
+    private string LogSuffix;
 
     /// <summary>
     /// 当前日期加上 overdueDay 计算出对应文件，删除，每天算一次
     /// </summary>
     /// <param name="logFolder">日志所在文件夹</param>
     /// <param name="overdueDay">过期天数</param>
-    public Log(string logFolder, int overdueDay)
+    /// <param name="logSuffix">日志文件名，日期+后缀，默认纯日期</param>
+    public Log(string logFolder, int overdueDay, string logSuffix = "")
     {
+        LogSuffix = logSuffix;
         OverdueDay = overdueDay;
         LogFolder = logFolder;
         Directory.CreateDirectory(logFolder);
@@ -44,7 +47,7 @@ internal class Log
 
         if (DateTime.Now.Hour == 6 && CanDelete == true)
         {
-            string overDay = DateTime.Today.AddDays(OverdueDay).ToString().Split(" ")[0].Replace("/", "：");
+            string overDay = DateTime.Today.AddDays(OverdueDay).ToString().Split(" ")[0].Replace("/", "：") + LogSuffix;
 
             LogsDictionary.TryGetValue(overDay, out var logPath);
             if (logPath != null)
@@ -59,8 +62,8 @@ internal class Log
     //例2021/12/6 15:39:14"
     public void Record(string content)
     {
-        string curDay = DateTime.Now.ToString().Split(" ")[0].Replace("/", "：");
-        var logPath = Path.Combine(LogFolder, curDay);
+        string curDay = DateTime.Now.ToString().Split(" ")[0].Replace("/", "：") + LogSuffix;
+        var logPath = Path.Combine(LogFolder, LogSuffix, curDay);
         LogsDictionary[curDay] = logPath;
         File.AppendAllTextAsync(logPath, "\n\n\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + content);
     }

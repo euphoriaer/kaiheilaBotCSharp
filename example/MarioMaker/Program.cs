@@ -12,6 +12,7 @@ namespace MarioMaker
     {
         private static Bot _bot;
         private static Log _log;
+        private static Log _errorlog;
         private static DistributeUtil<Action<JToken>, AttrMario, Program> _distributeUtil;
         private static string _baseUrl = "https://www.kaiheila.cn";
         public static Config Cfg;
@@ -65,8 +66,10 @@ namespace MarioMaker
             }));
             _bot = new Bot(botToken);
             _log = new Log(Path.Combine(System.Environment.CurrentDirectory, "LogFolder"), 30);
+            _errorlog = new Log(Path.Combine(System.Environment.CurrentDirectory, "LogFolder","Error"), 30,"Error");
             _bot.MessageListen += Message;
             _bot.Run();
+
         }
 
         private static void Message(string msg)
@@ -79,8 +82,7 @@ namespace MarioMaker
             var cmd = jo["content"].ToString().Split(" ")[0];
             var channelType = jo["channel_type"].ToString();
 
-
-            if (jo["author_id"].ToString() == "1076814837" || jo["author_id"].ToString() == "665867029")
+            if (jo["author_id"].ToString() == "1076814837" || jo["author_id"].ToString() == "1")
             {
                 //屏蔽机器人自己的消息
                 return;
@@ -101,6 +103,7 @@ namespace MarioMaker
             }
             catch (Exception e)
             {
+                _errorlog.Record("服务器发生异常 "+e.ToString());
             }
         }
     }
