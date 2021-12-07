@@ -82,7 +82,7 @@ namespace MarioMaker
             var cmd = jo["content"].ToString().Split(" ")[0];
             var channelType = jo["channel_type"].ToString();
 
-            if (jo["author_id"].ToString() == "1076814837" || jo["author_id"].ToString() == "1")
+            if (jo["author_id"].ToString() == "1076814837" || jo["author_id"].ToString() == "1"||jo["author_id"].ToString()== "665867029")
             {
                 //屏蔽机器人自己的消息
                 return;
@@ -103,7 +103,7 @@ namespace MarioMaker
             }
             catch (Exception e)
             {
-                _errorlog.Record("服务器发生异常 "+e.ToString());
+                _errorlog.Record("服务器发生异常  "+e.ToString());
             }
         }
     }

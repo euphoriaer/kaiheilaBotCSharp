@@ -8,8 +8,7 @@ namespace MarioMaker
     {
         public static bool CanSend = true;
 
-        [AttrMario(".shu.GROUP")]
-
+        [AttrMario(".777.GROUP")]
         public static void ShuTest(JToken jObject = null)
         {
             SendTimeMsg("9237630566057358");
