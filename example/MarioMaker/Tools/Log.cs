@@ -47,6 +47,7 @@ public class Log
 
         if (DateTime.Now.Hour == 6 && CanDelete == true)
         {
+            //error 减30天
             string overDay = DateTime.Today.AddDays(OverdueDay).ToString().Split(" ")[0].Replace("/", "：") + LogSuffix;
 
             LogsDictionary.TryGetValue(overDay, out var logPath);

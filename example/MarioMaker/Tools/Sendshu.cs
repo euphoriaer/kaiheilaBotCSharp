@@ -4,7 +4,7 @@ namespace MarioMaker
 {
     internal partial class Program
     {
-        public static string? SendShu(string Http, string msgJson)
+        public static string? SendShu(string Http, string? msgJson)
         {
             _log.Record("发送鼠消息： 地址：" + Http + "\n msg:" + msgJson);
             using (var client = new HttpClient())
