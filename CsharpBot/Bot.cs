@@ -96,11 +96,15 @@ namespace CsharpBot
                 Console.WriteLine("Gateway获取失败");
                 Environment.Exit(0);
             }
-            else if (gaturl.Result.Length <= 0)
-            {
-            }
-            //解析Gateway 获取到的内容
+            
             JObject jo = (JObject)(JsonConvert.DeserializeObject(gaturl.Result));
+
+            //解析Gateway 获取到的内容
+            if (jo["message"].ToString() == "你的用户凭证不正确")
+            {
+                Console.WriteLine("用户凭证错误 " + BotToken);
+            }
+
             string wss = jo["data"]["url"].ToString();
             Console.WriteLine("客户端:解析websocket链接  " + wss);
             websocketUri = new Uri(wss);

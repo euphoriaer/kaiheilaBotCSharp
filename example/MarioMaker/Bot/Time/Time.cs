@@ -44,6 +44,7 @@ namespace MarioMaker
 
         private static void SendTimeMsg(string targetId)
         {
+
             string msgShu = SendShu(Cfg.Read("Time"), "");
             var msgShus = JsonConvert.DeserializeObject<JToken>(msgShu);
 
@@ -52,30 +53,22 @@ namespace MarioMaker
             string levelSumAll = msgShus["data"][0]["levelSumAll"].ToString();
             string levelSub = msgShus["data"][0]["levelSub"].ToString();
 
-            JToken js1 = JsonConvert.DeserializeObject<JToken>(RegSuccess);
+            JToken js1 = JsonConvert.DeserializeObject<JToken>(Time);
+
+            string pinzhuangContent1 =
+                $"今天是服务器运行的第 {dayId} 天\n服务器共计 {levelNum} 个关卡，较昨日新增了 {levelSub} 关 \n昨日大家共计过了 {levelSumAll} 关";
+            js1[0]["modules"][1]["text"]["content"] = pinzhuangContent1;
+            
             string json1 = JsonConvert.SerializeObject(js1);//初始化注册成功的卡片消息
 
             JObject dic1 = new JObject();
             dic1.Add("type", "10");
             dic1.Add("content", json1);
-            dic1.Add("target_id", targetId);
+            dic1.Add("target_id", targetId);//error 要发送的频道ID
+
             string Ress1 = JsonConvert.SerializeObject(dic1);
+            _log.Record("发送每日推送" + Ress1);
             _bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", Ress1);
-
-            //string pinzhuangContent1 =
-            //    $"今天是服务器运行的第 {dayId} 天\n服务器共计 {levelNum} 个关卡，较昨日新增了 {levelSub} 关。\n昨日大家共计过了 {levelSumAll} 关";
-
-            //var json1 = JsonConvert.DeserializeObject<JToken>(Time);//初始化注册成功的卡片消息
-            //json1[0]["modules"][1]["text"]["content"] = pinzhuangContent1;
-
-            //JObject dic1 = new JObject();
-            //dic1.Add("type", "10");
-            //dic1.Add("content", json1);
-            //dic1.Add("target_id", targetId);//error 要发送的频道ID
-
-            //string Ress1 = JsonConvert.SerializeObject(dic1);
-            //_log.Record("发送每日推送"+ Ress1);
-            //_bot.SendMessage.Post(_baseUrl + "/api/v3/message/create", Ress1);
         }
     }
 }
