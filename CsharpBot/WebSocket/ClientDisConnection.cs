@@ -82,7 +82,8 @@ namespace CsharpBot
         /// </summary>
         internal void StopConnect()
         {
-            _clientFsm.Bot.CloseBot();
+            _clientFsm.Bot.log.Record("尝试重新连接");
+            _clientFsm.Bot.Client.Stop();
             _clientFsm.Bot.Run();
         }
     }

@@ -126,12 +126,23 @@ namespace CsharpBot
             websocketUri = new Uri(wss);
 
             //websocket 对象
-            Client = new Client(this);
-            
-            //发送消息对象
-            SendMessage = new SendMessage(this);
-            //信令分发对象
-            Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
+            if (Client==null)
+            {
+                Client = new Client(this);
+            }
+
+            if (SendMessage == null)
+            {
+                //发送消息对象
+                SendMessage = new SendMessage(this);
+            }
+
+            if (Distribute == null)
+            {
+                //信令分发对象
+                Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
+            }
+                
         }
 
         /// <summary>
@@ -170,7 +181,6 @@ namespace CsharpBot
             {
                 JsonListen(jo.ToString());
             }
-            log.Record("客户端：收到消息:" + "sn:" + LastSn + msg.ToString());
             Console.WriteLine("客户端：收到消息:" + "sn:" + LastSn + msg.ToString());
             //使用 通用消息分发
             var method = Distribute.GetMethod(jo["s"].ToString());
