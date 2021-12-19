@@ -7,7 +7,8 @@ namespace CsharpBot.Http
     internal class Gateway
     {
         private Bot _bot;
-        private string _gatewayUrl= "https://www.kaiheila.cn/api/v3/gateway/index";
+        private string _gatewayUrl = "https://www.kaiheila.cn/api/v3/gateway/index";
+
         internal Gateway(Bot bot)
         {
             _bot = bot;

@@ -36,7 +36,7 @@ namespace CsharpBot
             }
             else
             {
-                Console.WriteLine("对象是空的");
+                Bot.log.Record("对象是空的");
             }
             _currentState = states[type];
             _currentState.OnEnter(reconnectionInfo);

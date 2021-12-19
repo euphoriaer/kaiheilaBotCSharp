@@ -64,7 +64,7 @@ namespace MarioMaker
                     TimeSend();
                 }
             }));
-            _bot = new Bot(botToken);
+            _bot = new Bot(botToken,logFolderPath: Path.Combine(System.Environment.CurrentDirectory, "LogFolder", "BotLog"));
             _log = new Log(Path.Combine(System.Environment.CurrentDirectory, "LogFolder"), 30);
             _errorlog = new Log(Path.Combine(System.Environment.CurrentDirectory, "LogFolder","Error"), 30,"Error");
             _bot.MessageListen += Message;

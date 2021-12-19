@@ -8,7 +8,7 @@ namespace CsharpBot
     public class Client
     {
         private Bot _bot;
-        private ClientFSM _clientFsm;//有限状态机管理websocket连接状态
+        public ClientFSM _clientFsm;//有限状态机管理websocket连接状态
 
         internal Client(Bot bot)
         {
@@ -21,9 +21,10 @@ namespace CsharpBot
         internal void ClientStart()
         {
             var exitEvent = new ManualResetEvent(false);
-            //error 重构重连，改写在有限状态机中
+
             if (WebsocketClient != null)
             {
+                
                 var tast = Task.Run(WebsocketClient.Reconnect);
                 tast.Wait();
             }
@@ -64,6 +65,8 @@ namespace CsharpBot
 
         internal void CloseClient()
         {
+            //停止计时器
+            _bot.timer.Dispose();
             WebsocketClient.StopOrFail(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, null);
             Environment.Exit(0);
         }

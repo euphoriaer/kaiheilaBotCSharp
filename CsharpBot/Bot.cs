@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Timers;
 using Websocket.Client;
 
 namespace CsharpBot
@@ -28,11 +29,21 @@ namespace CsharpBot
         /// </summary>
         /// <param name="botToken">机器人Token</param>
         /// <param name="query">默认不加密</param>
-        public Bot(string botToken, int query = 0)
+        public Bot(string botToken, int query = 0, string logFolderPath = null)
         {
+            //error 将日志作为可选项启动
             BotToken = botToken;
             this.Query = query;
+            if (logFolderPath == null)
+            {
+                return;
+            }
+            log = new Log(logFolderPath, 30, "Bot");
         }
+
+        internal Timer timer;
+
+        internal Log log;
 
         internal string BotToken;
 
@@ -75,52 +86,82 @@ namespace CsharpBot
         public void Run()
         {
             //websocket 连接 1.Http 获取Gateway,2.解析Gateway url
-            DataInit();
-            // 开始连接websocket
-            Client.ClientStart();
+             DataInit();
+             // 开始连接websocket
+             Client.ClientStart();
         }
 
         /// <summary>
         /// 数据初始化
         /// </summary>
-        private void DataInit()
+        internal void DataInit()
         {
             KMessageStack.Clear();
+            InitTimer();
             LastSn = 0;
             //通过Gateway 获取websocket 连接地址
             Task<string> gaturl = new Gateway(this).GetGateway();
             gaturl.Wait();
-            Console.WriteLine(gaturl.Result);
+            log.Record(gaturl.Result);
             if (string.IsNullOrEmpty(gaturl.Result))
             {
+                log.Record("Gateway获取失败");
                 Console.WriteLine("Gateway获取失败");
                 Environment.Exit(0);
             }
-            
+
             JObject jo = (JObject)(JsonConvert.DeserializeObject(gaturl.Result));
 
             //解析Gateway 获取到的内容
             if (jo["message"].ToString() == "你的用户凭证不正确")
             {
+                log.Record("用户凭证错误 " + BotToken);
                 Console.WriteLine("用户凭证错误 " + BotToken);
+                Environment.Exit(0);
             }
 
             string wss = jo["data"]["url"].ToString();
+            log.Record("客户端:解析websocket链接  " + wss);
             Console.WriteLine("客户端:解析websocket链接  " + wss);
             websocketUri = new Uri(wss);
 
             //websocket 对象
             Client = new Client(this);
+            
             //发送消息对象
             SendMessage = new SendMessage(this);
             //信令分发对象
             Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
         }
 
+        /// <summary>
+        /// Ping Pong 计时器初始化
+        /// </summary>
+        private void InitTimer()
+        {
+            if (timer != null)
+            {
+                return;
+            }
+            //设置定时间隔(毫秒为单位)
+            int interval = 36000;
+            timer = new System.Timers.Timer(interval);
+            //设置执行一次（false）还是一直执行(true)
+            timer.AutoReset = true;
+            //设置是否执行System.Timers.Timer.Elapsed事件
+            timer.Enabled = true;
+            //绑定Elapsed事件
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(PongTimeOut);
+        }
+
+        private void PongTimeOut(object sender, ElapsedEventArgs e)
+        {
+            Client._clientFsm.TransitionState(ClientFSM.StateType.Disconnection, "超时");
+            //Pong 超时
+        }
+
         internal void ReceiveMsg(ResponseMessage msg)
         {
-            //todo 每隔36秒 没有收到一次 pong包，视为连接超时,再发两次ping，还没有收到， 需主动重连Resume
-
             //解析
             JObject jo = (JObject)(JsonConvert.DeserializeObject(msg.ToString()));
 
@@ -129,6 +170,7 @@ namespace CsharpBot
             {
                 JsonListen(jo.ToString());
             }
+            log.Record("客户端：收到消息:" + "sn:" + LastSn + msg.ToString());
             Console.WriteLine("客户端：收到消息:" + "sn:" + LastSn + msg.ToString());
             //使用 通用消息分发
             var method = Distribute.GetMethod(jo["s"].ToString());
@@ -169,28 +211,33 @@ namespace CsharpBot
             switch (code)
             {
                 case 400100:
+                    log.Record("客户端：缺少参数");
                     Console.WriteLine("客户端：缺少参数");
                     Client.CloseClient();
                     break;
 
                 case 400101:
+                    log.Record("客户端：无效的 token");
                     Console.WriteLine("客户端：无效的 token");
                     Client.CloseClient();
 
                     break;
 
                 case 400102:
+                    log.Record("客户端：token 验证失败");
                     Console.WriteLine("客户端：token 验证失败");
                     Client.CloseClient();
 
                     break;
 
                 case 400103:
+                    log.Record("客户端：token 过期");
                     Console.WriteLine("客户端：token 过期");
                     Client.CloseClient();
                     break;
 
                 default:
+                    log.Record("客户端：连接成功:" + "状态码，" + code);
                     Console.WriteLine("客户端：连接成功:" + "状态码，" + code);
                     break;
             }
@@ -199,22 +246,25 @@ namespace CsharpBot
         [AttrSignal("3")]
         private void Signal3(JObject jo)
         {
+            //每次收到Pong 重置Timer时间
+            timer.Interval = 36000;
+
             //心跳包
         }
 
         [AttrSignal("5")]
         private void Signal5(JObject jo)
         {
-            Console.WriteLine("客户端：解析消息，需要断开重连:");
+            //todo 记录Bot的日志 单独开一个日志对象
+            log.Record("客户端：解析消息，需要断开重连:");
             //需要断开重连
-            DataInit();//数据初始化
-            Client.CloseClient();//开始连接
+            Client._clientFsm.TransitionState(ClientFSM.StateType.Disconnection, "需要断开重连");
         }
 
         [AttrSignal("6")]
         private void Signal6(JObject jo)
         {
-            Console.WriteLine("客户端：解析消息，重连成功");
+            log.Record("客户端：解析消息，重连成功");
             //主动重连成功
         }
 

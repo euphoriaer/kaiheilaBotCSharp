@@ -17,6 +17,7 @@ namespace CsharpBot
         }
         void IState.OnEnter(string info)
         {
+            _clientFsm.Bot.log.Record("客户端： 服务器连接: " + info);
             Console.WriteLine("客户端： 服务器连接: " + info);
             //连接中每30s发送一次Ping
             _pingTask = Task.Run(() =>
