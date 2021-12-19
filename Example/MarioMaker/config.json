@@ -1,0 +1,15 @@
+{
+  "TestBotToken": "1/MTA1NTg=/LZ2fsaN2Te7hM7mh8bflnA==",
+  "BotToken": "1/MTA1NzU=/an3qOdVurmWej5eedUd0+g==",
+  "Reg": "http://localhost:8082/register",
+  "Add": "http://localhost:8082/kh/addLevel",
+  "Clear": "http://localhost:8082/kh/clear",
+  "Sd": "http://localhost:8082/kh/setDifficulty",
+  "Ss": "http://localhost:8082/kh/setStatus",
+  "Sv": "http://localhost:8082/kh/setVT",
+  "R": "http://localhost:8082/kh/giveMeLevel",
+  "D": "http://localhost:8082/kh/queryLevelDetail",
+  "Rt": "http://localhost:8082/kh/giveMELevelTwo",
+  "Time": "http://localhost:8082/kh/messagePush"
+}
+

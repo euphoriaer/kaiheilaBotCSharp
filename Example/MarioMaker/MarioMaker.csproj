@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <StartupObject>MarioMaker.Program</StartupObject>
+    <ApplicationIcon></ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Bot\RandomLevel\**" />
+    <EmbeddedResource Remove="Bot\RandomLevel\**" />
+    <None Remove="Bot\RandomLevel\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CsharpBot\CsharpBot.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Bot\Channel\" />
+    <Folder Include="Bot\Help\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

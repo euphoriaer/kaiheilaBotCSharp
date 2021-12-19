@@ -265,7 +265,7 @@ namespace CsharpBot
         [AttrSignal("5")]
         private void Signal5(JObject jo)
         {
-            //todo 记录Bot的日志 单独开一个日志对象
+            //记录Bot的日志 单独开一个日志对象
             log.Record("客户端：解析消息，需要断开重连:");
             //需要断开重连
             Client._clientFsm.TransitionState(ClientFSM.StateType.Disconnection, "需要断开重连");

@@ -7,7 +7,7 @@ namespace MarioMaker
     internal partial class Program
     {
         [AttrMario(".sv.GROUP")]
-        public static void ssetVT(JToken jObject)
+        public static void SsetVT(JToken jObject)
         {
             string wholeMsg = jObject["content"].ToString();
             int spaceIndex = wholeMsg.IndexOf(" ");//定位第一个空格
