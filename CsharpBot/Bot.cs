@@ -39,7 +39,11 @@ namespace CsharpBot
                 return;
             }
             log = new Log(logFolderPath, 30, "Bot");
+            //通过Gateway 获取websocket 连接地址
+            gateway = new Gateway(this);
         }
+
+        internal Gateway gateway;
 
         internal Timer timer;
 
@@ -85,10 +89,18 @@ namespace CsharpBot
 
         public void Run()
         {
-            //websocket 连接 1.Http 获取Gateway,2.解析Gateway url
-             DataInit();
-             // 开始连接websocket
-             Client.ClientStart();
+            try
+            {
+                //websocket 连接 1.Http 获取Gateway,2.解析Gateway url
+                DataInit();
+                // 开始连接websocket
+                Client.ClientStart();
+            }
+            catch (Exception e)
+            {
+              
+            }
+           
         }
 
         /// <summary>
@@ -99,8 +111,7 @@ namespace CsharpBot
             KMessageStack.Clear();
             InitTimer();
             LastSn = 0;
-            //通过Gateway 获取websocket 连接地址
-            Task<string> gaturl = new Gateway(this).GetGateway();
+            Task<string> gaturl = gateway.GetGateway();
             gaturl.Wait();
             log.Record(gaturl.Result);
             if (string.IsNullOrEmpty(gaturl.Result))
@@ -126,23 +137,13 @@ namespace CsharpBot
             websocketUri = new Uri(wss);
 
             //websocket 对象
-            if (Client==null)
-            {
-                Client = new Client(this);
-            }
+            Client = new Client(this);
 
-            if (SendMessage == null)
-            {
-                //发送消息对象
-                SendMessage = new SendMessage(this);
-            }
+            //发送消息对象
+            SendMessage = new SendMessage(this);
 
-            if (Distribute == null)
-            {
-                //信令分发对象
-                Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
-            }
-                
+            //信令分发对象
+            Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
         }
 
         /// <summary>
@@ -150,10 +151,7 @@ namespace CsharpBot
         /// </summary>
         private void InitTimer()
         {
-            if (timer != null)
-            {
-                return;
-            }
+            Console.WriteLine("计时器初始化");
             //设置定时间隔(毫秒为单位)
             int interval = 36000;
             timer = new System.Timers.Timer(interval);
@@ -167,6 +165,7 @@ namespace CsharpBot
 
         private void PongTimeOut(object sender, ElapsedEventArgs e)
         {
+            Console.WriteLine("Ping超时");
             Client._clientFsm.TransitionState(ClientFSM.StateType.Disconnection, "超时");
             //Pong 超时
         }
@@ -258,7 +257,7 @@ namespace CsharpBot
         {
             //每次收到Pong 重置Timer时间
             timer.Interval = 36000;
-
+            Console.WriteLine("计时重置");
             //心跳包
         }
 

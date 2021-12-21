@@ -65,7 +65,6 @@ namespace CsharpBot
 
         internal void Stop()
         {
-            cmd.Dispose();
             //停止计时器
             _bot.timer.Dispose();
             WebsocketClient.StopOrFail(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, null);
@@ -73,7 +72,6 @@ namespace CsharpBot
 
         internal void CloseClient()
         {
-           
             WebsocketClient.StopOrFail(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, null);
             Environment.Exit(0);
         }

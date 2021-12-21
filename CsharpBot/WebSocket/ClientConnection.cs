@@ -10,25 +10,30 @@ namespace CsharpBot
     public class ClientConnection : IState
     {
         private ClientFSM _clientFsm;
+
+        CancellationTokenSource cts;
         private Task _pingTask;
+        private bool isStopTask;
         public ClientConnection(ClientFSM fsm)
         {
             _clientFsm = fsm;
         }
         void IState.OnEnter(string info)
         {
+            isStopTask = false;
             _clientFsm.Bot.log.Record("客户端： 服务器连接: " + info);
             Console.WriteLine("客户端： 服务器连接: " + info);
             //连接中每30s发送一次Ping
-            _pingTask = Task.Run(() =>
+            cts = new CancellationTokenSource();
+            _pingTask = new Task(() =>
             {
                 while (true)
                 {
                     Ping();
-                    Thread.Sleep(30000);//30秒一次心跳包
+                    Thread.Sleep(30000); //30秒一次心跳包
                 }
-            });
-
+            }, cts.Token);
+            _pingTask.Start();
         }
 
         internal void Ping()
@@ -42,11 +47,14 @@ namespace CsharpBot
             _clientFsm.Bot.Client.WebsocketClient.Send(pingJson);
         }
 
-
         void IState.OnExit()
         {
+            if (cts==null)
+            {
+                return;
+            }
+            cts.Cancel();
             //退出连接状态不需要发送Ping 
-            _pingTask.Dispose();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace CsharpBot
     public class ClientDisConnection : IState
     {
         private ClientFSM _clientFsm;
-
+        private CancellationTokenSource cts;
         private Task _reConnect;
 
         public ClientDisConnection(ClientFSM fsm)
@@ -21,6 +21,7 @@ namespace CsharpBot
         {
             _clientFsm.Bot.log.Record("客户端：服务器断开: " + info);
             Console.WriteLine("客户端：服务器断开: " + info);
+            cts = new CancellationTokenSource();
             //error 需要尝试主动重连
             if (info == "需要断开重连")
             {
@@ -31,7 +32,7 @@ namespace CsharpBot
                         StopConnect();
                         Thread.Sleep(10000); //每隔10秒尝试重连一次
                     }
-                }));
+                }), cts.Token);
             }
 
             if (info == "超时")
@@ -41,7 +42,7 @@ namespace CsharpBot
                 {
                     StopConnect();
                     Thread.Sleep(10000); //每隔10秒尝试重连一次
-                }));
+                }), cts.Token);
 
                 return;
                 //todo 每隔36秒 没有收到一次 pong包，视为连接超时,再发两次ping 2 4，
@@ -56,11 +57,12 @@ namespace CsharpBot
 
         void IState.OnExit()
         {
-            if (_reConnect != null)
+            if (cts==null)
             {
-                //连接成功退出重连模式
-                _reConnect.Dispose();
+                return;
             }
+            cts.Cancel();
+            //连接成功退出重连模式
         }
 
         /// <summary>
