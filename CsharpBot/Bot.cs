@@ -41,6 +41,15 @@ namespace CsharpBot
             log = new Log(logFolderPath, 30, "Bot");
             //通过Gateway 获取websocket 连接地址
             gateway = new Gateway(this);
+
+            //websocket 对象
+            Client = new Client(this);
+
+            //发送消息对象
+            SendMessage = new SendMessage(this);
+
+            //信令分发对象
+            Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
         }
 
         internal Gateway gateway;
@@ -135,15 +144,6 @@ namespace CsharpBot
             log.Record("客户端:解析websocket链接  " + wss);
             Console.WriteLine("客户端:解析websocket链接  " + wss);
             websocketUri = new Uri(wss);
-
-            //websocket 对象
-            Client = new Client(this);
-
-            //发送消息对象
-            SendMessage = new SendMessage(this);
-
-            //信令分发对象
-            Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
         }
 
         /// <summary>
@@ -242,7 +242,6 @@ namespace CsharpBot
                 case 400103:
                     log.Record("客户端：token 过期");
                     Console.WriteLine("客户端：token 过期");
-                    Client.CloseClient();
                     break;
 
                 default:

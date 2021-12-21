@@ -23,25 +23,25 @@ namespace CsharpBot
             Console.WriteLine("客户端：服务器断开: " + info);
             cts = new CancellationTokenSource();
             //error 需要尝试主动重连
-            if (info == "需要断开重连")
-            {
-                _reConnect = Task.Run((() =>
-                {
-                    while (true)
-                    {
-                        StopConnect();
-                        Thread.Sleep(10000); //每隔10秒尝试重连一次
-                    }
-                }), cts.Token);
-            }
+            //if (info == "需要断开重连")
+            //{
+            //    _reConnect = Task.Run((() =>
+            //    {
+            //        while (true)
+            //        {
+            //            StopConnect();
+            //            Thread.Sleep(10000); //每隔10秒尝试重连一次
+            //        }
+            //    }), cts.Token);
+            //}
 
             if (info == "超时")
             {
                 //暂按全部断开重连处理，因为不需要中间的离线消息
                 _reConnect = Task.Run((() =>
                 {
-                    StopConnect();
                     Thread.Sleep(10000); //每隔10秒尝试重连一次
+                    StopConnect();
                 }), cts.Token);
 
                 return;
@@ -85,6 +85,7 @@ namespace CsharpBot
         internal void StopConnect()
         {
             _clientFsm.Bot.log.Record("尝试重新连接");
+            Console.WriteLine("尝试重新连接");
             _clientFsm.Bot.Client.Stop();
             _clientFsm.Bot.Run();
         }
