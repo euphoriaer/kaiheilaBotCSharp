@@ -21,47 +21,47 @@ namespace CsharpBot
         {
             _clientFsm.Bot.log.Record("客户端：服务器断开: " + info);
             Console.WriteLine("客户端：服务器断开: " + info);
-            cts = new CancellationTokenSource();
-            //error 需要尝试主动重连
-            //if (info == "需要断开重连")
-            //{
-            //    _reConnect = Task.Run((() =>
-            //    {
-            //        while (true)
-            //        {
-            //            StopConnect();
-            //            Thread.Sleep(10000); //每隔10秒尝试重连一次
-            //        }
-            //    }), cts.Token);
-            //}
-
-            if (info == "超时")
+            Console.WriteLine("进入重连");
+            if (cts != null)
             {
-                //暂按全部断开重连处理，因为不需要中间的离线消息
-                _reConnect = Task.Run((() =>
-                {
-                    Thread.Sleep(10000); //每隔10秒尝试重连一次
-                    StopConnect();
-                }), cts.Token);
-
-                return;
-                //todo 每隔36秒 没有收到一次 pong包，视为连接超时,再发两次ping 2 4，
-
-                //todo 还没有收到，Gateway一次，主动重连Resume 2次，接收离线消息
-                Thread.Sleep(8000);//8秒
-                Resume();
-                Thread.Sleep(16000);//16秒
-                Resume();
+                cts.Cancel();
             }
+            cts = new CancellationTokenSource();
+            //暂按全部断开重连处理，因为不需要中间的离线消息
+            _reConnect = Task.Run((() =>
+            {
+                while (!cts.IsCancellationRequested)
+                {
+                    try
+                    {
+                        StopConnect();
+                        Thread.Sleep(10000); //每隔10秒尝试重连一次
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+            }), cts.Token);
+
+            return;
+            //todo 每隔36秒 没有收到一次 pong包，视为连接超时,再发两次ping 2 4，
+
+            //todo 还没有收到，Gateway一次，主动重连Resume 2次，接收离线消息
+            Thread.Sleep(8000);//8秒
+            Resume();
+            Thread.Sleep(16000);//16秒
+            Resume();
         }
 
         void IState.OnExit()
         {
-            if (cts==null)
+            if (cts == null)
             {
                 return;
             }
             cts.Cancel();
+            Console.WriteLine("退出重连");
             //连接成功退出重连模式
         }
 

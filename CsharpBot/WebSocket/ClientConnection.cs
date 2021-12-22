@@ -23,14 +23,29 @@ namespace CsharpBot
             isStopTask = false;
             _clientFsm.Bot.log.Record("客户端： 服务器连接: " + info);
             Console.WriteLine("客户端： 服务器连接: " + info);
+            Console.WriteLine("开启ping");
             //连接中每30s发送一次Ping
+            if (cts!=null)
+            {
+                cts.Cancel();
+            }
             cts = new CancellationTokenSource();
             _pingTask = new Task(() =>
             {
-                while (true)
+                while (!cts.IsCancellationRequested)
                 {
-                    Ping();
-                    Thread.Sleep(30000); //30秒一次心跳包
+                    try
+                    {
+                        Ping();
+                        Thread.Sleep(30000); //30秒一次心跳包
+                        //error  多次Ping 无法SendMessage 线程乱序
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                       
+                    }
+                   
                 }
             }, cts.Token);
             _pingTask.Start();
@@ -54,6 +69,7 @@ namespace CsharpBot
                 return;
             }
             cts.Cancel();
+            Console.WriteLine("取消ping");
             //退出连接状态不需要发送Ping 
         }
     }

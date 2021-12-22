@@ -24,34 +24,6 @@ namespace CsharpBot
 
     public class Bot : IBotFunction
     {
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="botToken">机器人Token</param>
-        /// <param name="query">默认不加密</param>
-        public Bot(string botToken, int query = 0, string logFolderPath = null)
-        {
-            //error 将日志作为可选项启动
-            BotToken = botToken;
-            this.Query = query;
-            if (logFolderPath == null)
-            {
-                return;
-            }
-            log = new Log(logFolderPath, 30, "Bot");
-            //通过Gateway 获取websocket 连接地址
-            gateway = new Gateway(this);
-
-            //websocket 对象
-            Client = new Client(this);
-
-            //发送消息对象
-            SendMessage = new SendMessage(this);
-
-            //信令分发对象
-            Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
-        }
-
         internal Gateway gateway;
 
         internal Timer timer;
@@ -96,6 +68,31 @@ namespace CsharpBot
 
         private DistributeUtil<Action<JObject>, AttrSignal, Bot> Distribute;
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="botToken">机器人Token</param>
+        /// <param name="query">默认不加密</param>
+        public Bot(string botToken, int query = 0, string logFolderPath = null)
+        {
+            //error 将日志作为可选项启动
+            BotToken = botToken;
+            this.Query = query;
+            if (logFolderPath == null)
+            {
+                return;
+            }
+            log = new Log(logFolderPath, 30, "Bot");
+            //通过Gateway 获取websocket 连接地址
+            gateway = new Gateway(this);
+
+            //websocket 对象
+            Client = new Client(this);
+
+            //信令分发对象
+            Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
+        }
+
         public void Run()
         {
             try
@@ -107,9 +104,8 @@ namespace CsharpBot
             }
             catch (Exception e)
             {
-              
+                Console.WriteLine(e);
             }
-           
         }
 
         /// <summary>
@@ -144,6 +140,9 @@ namespace CsharpBot
             log.Record("客户端:解析websocket链接  " + wss);
             Console.WriteLine("客户端:解析websocket链接  " + wss);
             websocketUri = new Uri(wss);
+
+            //发送消息对象
+            SendMessage = new SendMessage(this);
         }
 
         /// <summary>
@@ -166,6 +165,7 @@ namespace CsharpBot
         private void PongTimeOut(object sender, ElapsedEventArgs e)
         {
             Console.WriteLine("Ping超时");
+            timer.Close();//超时后停止计时，避免多次进入 Disconnect 状态
             Client._clientFsm.TransitionState(ClientFSM.StateType.Disconnection, "超时");
             //Pong 超时
         }
