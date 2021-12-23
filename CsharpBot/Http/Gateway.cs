@@ -26,10 +26,18 @@ namespace CsharpBot.Http
 
                 var result = client.SendAsync(httpRequestMessage);
                 //请求结果client
-                var webUrl = result.Result.Content.ReadAsStringAsync();
+                try
+                {
+                    var webUrl = result.Result.Content.ReadAsStringAsync();
+                    Console.WriteLine(webUrl);
+                    return webUrl;
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
 
-                Console.WriteLine(webUrl);
-                return webUrl;
+              
             }
             return null;
         }

@@ -11,7 +11,7 @@ namespace CsharpBot
 {
     internal interface IBotFunction
     {
-        void Run();
+        bool Run();
 
         void CloseBot();
     }
@@ -68,6 +68,8 @@ namespace CsharpBot
 
         private DistributeUtil<Action<JObject>, AttrSignal, Bot> Distribute;
 
+        internal Action InitTimerAction;
+
         /// <summary>
         ///
         /// </summary>
@@ -89,43 +91,67 @@ namespace CsharpBot
             //websocket 对象
             Client = new Client(this);
 
+            //发送消息对象
+            SendMessage = new SendMessage(this);
+
             //信令分发对象
             Distribute = new DistributeUtil<Action<JObject>, AttrSignal, Bot>(this);
+
+            InitTimerAction = InitTimer;
+
+            //todo 写一个Cmd server，将 全部功能都写成Server？
+            Task.Run(() =>
+             {
+                 while (true)
+                 {
+                     //客户端主动指令
+                     string input = Console.ReadLine();
+                     if (input == "exit")
+                     {
+                         Client.CloseClient();
+                     }
+                 }
+             });
         }
 
-        public void Run()
+        public bool Run()
         {
+            //websocket 连接 1.Http 获取Gateway,2.解析Gateway url
+            if (DataInit()==false)
+            {
+                return false;
+            }
+
             try
             {
-                //websocket 连接 1.Http 获取Gateway,2.解析Gateway url
-                DataInit();
                 // 开始连接websocket
                 Client.ClientStart();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>
         /// 数据初始化
         /// </summary>
-        internal void DataInit()
+        internal bool DataInit()
         {
             KMessageStack.Clear();
-            InitTimer();
             LastSn = 0;
             Task<string> gaturl = gateway.GetGateway();
-            gaturl.Wait();
-            log.Record(gaturl.Result);
-            if (string.IsNullOrEmpty(gaturl.Result))
+            gaturl?.Wait();
+            log.Record(gaturl?.Result);
+            if (string.IsNullOrEmpty(gaturl?.Result))
             {
                 log.Record("Gateway获取失败");
                 Console.WriteLine("Gateway获取失败");
-                Environment.Exit(0);
+                return false; 
             }
-
+            
             JObject jo = (JObject)(JsonConvert.DeserializeObject(gaturl.Result));
 
             //解析Gateway 获取到的内容
@@ -140,9 +166,7 @@ namespace CsharpBot
             log.Record("客户端:解析websocket链接  " + wss);
             Console.WriteLine("客户端:解析websocket链接  " + wss);
             websocketUri = new Uri(wss);
-
-            //发送消息对象
-            SendMessage = new SendMessage(this);
+            return true;
         }
 
         /// <summary>
@@ -159,13 +183,12 @@ namespace CsharpBot
             //设置是否执行System.Timers.Timer.Elapsed事件
             timer.Enabled = true;
             //绑定Elapsed事件
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(PongTimeOut);
+            timer.Elapsed += PongTimeOut;
         }
 
         private void PongTimeOut(object sender, ElapsedEventArgs e)
         {
             Console.WriteLine("Ping超时");
-            timer.Close();//超时后停止计时，避免多次进入 Disconnect 状态
             Client._clientFsm.TransitionState(ClientFSM.StateType.Disconnection, "超时");
             //Pong 超时
         }
@@ -240,6 +263,7 @@ namespace CsharpBot
                     break;
 
                 case 400103:
+                    Client._clientFsm.TransitionState(ClientFSM.StateType.Disconnection, "40103重启");
                     log.Record("客户端：token 过期");
                     Console.WriteLine("客户端：token 过期");
                     break;

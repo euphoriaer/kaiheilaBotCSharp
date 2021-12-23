@@ -66,6 +66,14 @@ public class Log
         string curDay = DateTime.Now.ToString().Split(" ")[0].Replace("/", "：") + LogSuffix;
         var logPath = Path.Combine(LogFolder, curDay);
         LogsDictionary[curDay] = logPath;
-        File.AppendAllText(logPath, "\n\n\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + content);
+        try
+        {
+            File.AppendAllText(logPath, "\n\n\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + content);
+
+        }
+        catch (Exception e)
+        {
+   
+        }
     }
 }
