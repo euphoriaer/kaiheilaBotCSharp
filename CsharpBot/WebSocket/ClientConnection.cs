@@ -12,7 +12,6 @@ namespace CsharpBot
 
         private CancellationTokenSource cts;
         private Task _pingTask;
-        private bool isStopTask;
 
         public ClientConnection(ClientFSM fsm)
         {
@@ -22,7 +21,7 @@ namespace CsharpBot
 
         public override void OnEnter(string info)
         {
-            isStopTask = false;
+       
             _clientFsm.Bot.log.Record("客户端： 服务器连接: " + info);
             Console.WriteLine("客户端： 服务器连接: " + info);
             Console.WriteLine("开启ping");

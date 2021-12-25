@@ -39,7 +39,7 @@ namespace CsharpBot
 
             WebsocketClient.ReconnectionHappened.Subscribe((info) =>
             {
-                _clientFsm.TransitionState(ClientFSM.StateType.Connection, info.Type.ToString());
+               
             });
 
             WebsocketClient.MessageReceived.Subscribe(msg =>
@@ -56,8 +56,7 @@ namespace CsharpBot
         internal void Stop()
         {
             //停止计时器
-            _bot.timer?.Stop();
-            _bot.timer?.Dispose();
+            //_bot.timer.Dispose();
             WebsocketClient?.StopOrFail(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, null);
             var task = WebsocketClient?.Stop(WebSocketCloseStatus.Empty, "close");
             task?.Wait();

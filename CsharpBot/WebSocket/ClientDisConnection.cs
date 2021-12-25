@@ -45,9 +45,6 @@ namespace CsharpBot
                 return;
             }
             cts.Cancel();
-            _reConnect.Wait();
-            _reConnect.Dispose();
-            cts.Dispose();
             //连接成功退出重连模式
         }
 

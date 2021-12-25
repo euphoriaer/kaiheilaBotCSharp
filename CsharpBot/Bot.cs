@@ -172,24 +172,29 @@ namespace CsharpBot
         /// <summary>
         /// Ping Pong 计时器初始化
         /// </summary>
-        private void InitTimer()
+        internal void InitTimer()
         {
             Console.WriteLine("计时器初始化");
             //设置定时间隔(毫秒为单位)
             int interval = 36000;
-            timer = new System.Timers.Timer(interval);
+            timer = new Timer(interval);
             //设置执行一次（false）还是一直执行(true)
             timer.AutoReset = true;
             //设置是否执行System.Timers.Timer.Elapsed事件
             timer.Enabled = true;
             //绑定Elapsed事件
             timer.Elapsed += PongTimeOut;
+
+            timer.Start();
         }
 
         private void PongTimeOut(object sender, ElapsedEventArgs e)
         {
             Console.WriteLine("Ping超时");
+            timer.Stop();
+            timer.Dispose();
             Client._clientFsm.TransitionState(ClientFSM.StateType.Disconnection, "超时");
+            
             //Pong 超时
         }
 
@@ -242,27 +247,27 @@ namespace CsharpBot
             var code = d.Value<int>("code");
             switch (code)
             {
-                case 400100:
+                case 40100:
                     log.Record("客户端：缺少参数");
                     Console.WriteLine("客户端：缺少参数");
                     Client.CloseClient();
                     break;
 
-                case 400101:
+                case 40101:
                     log.Record("客户端：无效的 token");
                     Console.WriteLine("客户端：无效的 token");
                     Client.CloseClient();
 
                     break;
 
-                case 400102:
+                case 40102:
                     log.Record("客户端：token 验证失败");
                     Console.WriteLine("客户端：token 验证失败");
                     Client.CloseClient();
 
                     break;
 
-                case 400103:
+                case 40103:
                     Client._clientFsm.TransitionState(ClientFSM.StateType.Disconnection, "40103重启");
                     log.Record("客户端：token 过期");
                     Console.WriteLine("客户端：token 过期");
@@ -271,6 +276,7 @@ namespace CsharpBot
                 default:
                     log.Record("客户端：连接成功:" + "状态码，" + code);
                     Console.WriteLine("客户端：连接成功:" + "状态码，" + code);
+                    Client._clientFsm.TransitionState(ClientFSM.StateType.Connection,"连接成功");
                     break;
             }
         }
