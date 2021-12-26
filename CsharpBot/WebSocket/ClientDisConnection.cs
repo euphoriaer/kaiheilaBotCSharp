@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,41 +8,52 @@ namespace CsharpBot
     public class ClientDisConnection : StateBase
     {
         private ClientFSM _clientFsm;
-        private CancellationTokenSource cts;
         private Task _reConnect;
+
+        private ManualResetEvent singelResetEvent;
 
         public ClientDisConnection(ClientFSM fsm)
         {
+            singelResetEvent = new ManualResetEvent(false);
             CurStateType = ClientFSM.StateType.Disconnection;
             _clientFsm = fsm;
+            _reConnect = new Task((() =>
+            {
+                while (true)
+                {
+                    singelResetEvent.WaitOne();
+                    StopConnect();
+                    Thread.Sleep(10000); //每隔10秒尝试重连一次
+                }
+            }));
+            _reConnect.Start();
         }
 
         public override void OnEnter(string info)
         {
             _clientFsm.Bot.log.Record("客户端：服务器断开: " + info);
             Console.WriteLine("客户端：服务器断开: " + info);
-            Console.WriteLine("进入重连");
-           
-            cts = new CancellationTokenSource();
-            //暂按全部断开重连处理，因为不需要中间的离线消息
-            _reConnect = Task.Run((() =>
+            Console.WriteLine("进入重连");// error 第二次进入重连失败
+            bool isOK = singelResetEvent.Set();
+            if (!isOK)
             {
-                while (!cts.IsCancellationRequested)
+                Console.WriteLine("ERROR !! Stop Singel Fail --------");
+                //定义自己的 错误
+                try
                 {
-                    StopConnect();
-                    Thread.Sleep(2000); //每隔2秒尝试重连一次
                 }
-            }), cts.Token);
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+            //暂按全部断开重连处理，因为不需要中间的离线消息
         }
 
         public override void OnExit()
         {
             Console.WriteLine("重连成功,退出重连");
-            if (cts == null)
-            {
-                return;
-            }
-            cts.Cancel();
+            singelResetEvent.Reset();
             //连接成功退出重连模式
         }
 
