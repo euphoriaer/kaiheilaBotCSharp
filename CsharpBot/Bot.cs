@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Timers;
 using Websocket.Client;
@@ -75,16 +76,21 @@ namespace CsharpBot
         /// </summary>
         /// <param name="botToken">机器人Token</param>
         /// <param name="query">默认不加密</param>
-        public Bot(string botToken, int query = 0, string logFolderPath = null)
+        /// <param name="logFolderPath">默认 当前目录LogFolder 下的BotLog</param>
+        public Bot(string botToken, int query = 0, string logFolderPath = "default")
         {
             //error 将日志作为可选项启动
             BotToken = botToken;
             this.Query = query;
-            if (logFolderPath == null)
+            if (logFolderPath == default)
             {
-                return;
+                log = new Log(Path.Combine(Environment.CurrentDirectory, "LogFolder", "BotLog"), 30, "Bot");
             }
-            log = new Log(logFolderPath, 30, "Bot");
+            else
+            {
+                log = new Log(logFolderPath, 30, "Bot");
+            }
+
             //通过Gateway 获取websocket 连接地址
             gateway = new Gateway(this);
 
@@ -205,7 +211,7 @@ namespace CsharpBot
         internal void ReceiveMsg(ResponseMessage msg)
         {
             //解析
-            
+
             JObject jo = (JObject)(JsonConvert.DeserializeObject(msg.ToString()));
 
             jo.TryGetValue("sn", out LastSn);
@@ -290,7 +296,7 @@ namespace CsharpBot
         private void Signal3(JObject jo)
         {
             //每次收到Pong 重置Timer时间
-            if (timer!=null)
+            if (timer != null)
             {
                 timer.Interval = 36000;
             }
