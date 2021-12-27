@@ -117,7 +117,7 @@ namespace CsharpBot
         public bool Run()
         {
             //websocket 连接 1.Http 获取Gateway,2.解析Gateway url
-            if (DataInit()==false)
+            if (DataInit() == false)
             {
                 return false;
             }
@@ -149,9 +149,9 @@ namespace CsharpBot
             {
                 log.Record("Gateway获取失败");
                 Console.WriteLine("Gateway获取失败");
-                return false; 
+                return false;
             }
-            
+
             JObject jo = (JObject)(JsonConvert.DeserializeObject(gaturl.Result));
 
             //解析Gateway 获取到的内容
@@ -177,6 +177,10 @@ namespace CsharpBot
             Console.WriteLine("计时器初始化");
             //设置定时间隔(毫秒为单位)
             int interval = 36000;
+
+            timer?.Stop();
+            timer?.Dispose();
+
             timer = new Timer(interval);
             //设置执行一次（false）还是一直执行(true)
             timer.AutoReset = true;
@@ -191,16 +195,17 @@ namespace CsharpBot
         private void PongTimeOut(object sender, ElapsedEventArgs e)
         {
             Console.WriteLine("Ping超时");
-            timer.Stop();
-            timer.Dispose();
+            timer?.Stop();
+            timer?.Dispose();
             Client._clientFsm.TransitionState(ClientFSM.StateType.Disconnection, "超时");
-            
+
             //Pong 超时
         }
 
         internal void ReceiveMsg(ResponseMessage msg)
         {
             //解析
+            
             JObject jo = (JObject)(JsonConvert.DeserializeObject(msg.ToString()));
 
             jo.TryGetValue("sn", out LastSn);
@@ -276,7 +281,7 @@ namespace CsharpBot
                 default:
                     log.Record("客户端：连接成功:" + "状态码，" + code);
                     Console.WriteLine("客户端：连接成功:" + "状态码，" + code);
-                    Client._clientFsm.TransitionState(ClientFSM.StateType.Connection,"连接成功");
+                    Client._clientFsm.TransitionState(ClientFSM.StateType.Connection, "连接成功");
                     break;
             }
         }
@@ -285,7 +290,10 @@ namespace CsharpBot
         private void Signal3(JObject jo)
         {
             //每次收到Pong 重置Timer时间
-            timer.Interval = 36000;
+            if (timer!=null)
+            {
+                timer.Interval = 36000;
+            }
             Console.WriteLine("计时重置");
             //心跳包
         }

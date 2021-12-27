@@ -12,28 +12,20 @@ namespace CsharpBot
         private Task _pingTask;
 
         private ManualResetEvent _resetEvent;
+
         public ClientConnection(ClientFSM fsm)
         {
             base.CurStateType = ClientFSM.StateType.Connection;
             _clientFsm = fsm;
-            _resetEvent = new ManualResetEvent(true);
-            _resetEvent.Reset();
+            _resetEvent = new ManualResetEvent(false);
             _pingTask = new Task(() =>
             {
-
                 while (true)
                 {
-                    try
-                    {
-                        _resetEvent.WaitOne();
-                        Ping();
-                        Thread.Sleep(30000); //30秒一次心跳包
-                        //error Ping Pong 放在一起，超时即退出
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
+                    _resetEvent.WaitOne();
+                    Ping();
+                    Thread.Sleep(30000); //30秒一次心跳包
+                                         //error Ping Pong 放在一起，超时即退出
                 }
             });
             _pingTask.Start();
@@ -41,15 +33,15 @@ namespace CsharpBot
 
         public override void OnEnter(string info)
         {
-            _resetEvent.Set();
             _clientFsm.Bot.log.Record("客户端： 服务器连接: " + info);
             Console.WriteLine("客户端： 服务器连接: " + info);
             Console.WriteLine("开启ping");
+            Ping();
+            _resetEvent.Set();
             //连接中每30s发送一次Ping
-            
+
             //error 启动 Pong 计时器  error Ping Pong 重启不生效
             _clientFsm.Bot.InitTimerAction();
-           
         }
 
         internal void Ping()
@@ -66,6 +58,11 @@ namespace CsharpBot
         public override void OnExit()
         {
             _resetEvent.Reset();
+
+            _clientFsm.Bot.timer?.Stop();
+            _clientFsm.Bot.timer?.Dispose();
+
+            _clientFsm.Bot.Client.Stop();
             Console.WriteLine("取消ping");
             //退出连接状态不需要发送Ping
         }
