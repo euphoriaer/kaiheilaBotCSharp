@@ -3,6 +3,7 @@
 
 
 # Quick Start
+
 添加CsharpBot.dll到引用，[Releases](https://github.com/euphoriaer/kaiheilaBotCSharp/releases)
 
     private static void Main(string[] args)
